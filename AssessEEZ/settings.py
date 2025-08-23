@@ -143,10 +143,10 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Debug static files configuration
-print(f"DEBUG: STATIC_ROOT = {STATIC_ROOT}")
-print(f"DEBUG: STATICFILES_DIRS = {STATICFILES_DIRS}")
-print(f"DEBUG: BASE_DIR = {BASE_DIR}")
+# Debug static files configuration (commented out for production)
+# print(f"DEBUG: STATIC_ROOT = {STATIC_ROOT}")
+# print(f"DEBUG: STATICFILES_DIRS = {STATICFILES_DIRS}")
+# print(f"DEBUG: BASE_DIR = {BASE_DIR}")
 
 # Add whitenoise for static file serving in production
 if not DEBUG:
