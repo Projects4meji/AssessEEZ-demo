@@ -8,6 +8,12 @@ echo "Current directory: $(pwd)"
 echo "Directory contents:"
 ls -la
 
+# Check environment variables
+echo "Checking environment variables..."
+echo "DEBUG: $DEBUG"
+echo "DATABASE_URL: ${DATABASE_URL:0:50}..."  # Show first 50 chars
+echo "SECRET_KEY: ${SECRET_KEY:0:20}..."      # Show first 20 chars
+
 # Install dependencies
 echo "Installing dependencies..."
 pip install -r requirements.txt
