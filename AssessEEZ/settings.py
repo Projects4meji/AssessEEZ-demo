@@ -35,14 +35,14 @@ except ImportError:
 try:
     SECRET_KEY = config('SECRET_KEY')
 except:
-    SECRET_KEY = 'django-insecure-your-secret-key-here-change-this-in-production'
+    SECRET_KEY = 'ta-m1t%jyq86=0#pbt2@p&40d4wyq86=0#pbt2@p&40d4wi($0jk%pn1rk=zc8^(16l$u'
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 try:
     ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 except:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app', '.render.com', '.herokuapp.com']
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app', '.render.com', '.herokuapp.com', '*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -97,19 +97,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'AssessEEZ.wsgi.application'
 
 # Database
-if dj_database_url:
-    try:
+try:
+    DATABASE_URL = config('DATABASE_URL')
+    if DATABASE_URL:
         DATABASES = {
-            'default': dj_database_url.parse(config('DATABASE_URL'))
+            'default': dj_database_url.parse(DATABASE_URL)
         }
-    except:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
-else:
+    else:
+        raise ValueError("No DATABASE_URL found")
+except:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
