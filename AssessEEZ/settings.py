@@ -310,9 +310,9 @@ CSP_FRAME_ANCESTORS = ["'self'"]
 CSP_REPORT_ONLY = False
 
 # Stripe Configuration
-STRIPE_PUBLIC_KEY = 'pk_test_51R3Q1PEYQxHtXYU4qOCuPhqRA97YpuM2Nvry3lHdfMLzngKRzdRIm7hJ5mYsg2qZ1xfletQWIda9esqqNmLhI6Cp00Q1AN1iTT'
-STRIPE_SECRET_KEY = 'sk_test_51R3Q1PEYQxHtXYU4rAo2IAxXrezUQ8Cmwk7hsH5A2qOlekKC2NM26b82pnyjeSMRWcIeFd5PBLcLgsAs7upo9Ysr00MNYn2ID0'
-STRIPE_WEBHOOK_SECRET = 'whsec_your_webhook_secret_here'  # You'll need to set this up in Stripe Dashboard
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY', default='pk_test_51R3Q1PEYQxHtXYU4qOCuPhqRA97YpuM2Nvry3lHdfMLzngKRzdRIm7hJ5mYsg2qZ1xfletQWIda9esqqNmLhI6Cp00Q1AN1iTT')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='sk_test_51R3Q1PEYQxHtXYU4rAo2IAxXrezUQ8Cmwk7hsH5A2qOlekKC2NM26b82pnyjeSMRWcIeFd5PBLcLgsAs7upo9Ysr00MNYn2ID0')
+STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='whsec_your_webhook_secret_here')  # You'll need to set this up in Stripe Dashboard
 
 #INTERNAL_IPS = [
  #  '127.0.0.1',
