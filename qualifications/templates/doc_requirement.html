@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Document Requirements - {{ qualification.qualification_title }}{% endblock %}
+
+{% block nav_title %}Document Requirements{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'qualifications:view-qualification' %}?id={{ qualification.id }}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Qualification</a>
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto mt-10 px-4">
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Document Requirements for {{ qualification.qualification_title }}</h2>
+
+            <!-- Form for adding/editing document requirements -->
+            <form method="POST" enctype="multipart/form-data" class="mb-8">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="mt-4">
+                    <button type="submit" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition">
+                        {% if form.instance.id %}Update{% else %}Add{% endif %} Document Requirement
+                    </button>
+                    {% if form.instance.id %}
+                        <a href="{% url 'qualifications:doc_requirement' %}?id={{ qualification.id }}" class="ml-2 text-gray-600 hover:underline">Cancel Edit</a>
+                    {% endif %}
+                </div>
+            </form>
+
+            <!-- Table of existing document requirements -->
+            {% if document_requirements %}
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border px-4 py-2 text-left">Title</th>
+                                <th class="border px-4 py-2 text-left">Description</th>
+                                <th class="border px-4 py-2 text-left">Template</th>
+                                <th class="border px-4 py-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doc in document_requirements %}
+                                <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
+                                    <td class="border px-4 py-2">{{ doc.title }}</td>
+                                    <td class="border px-4 py-2">{{ doc.description|truncatewords:20 }}</td>
+                                    <td class="border px-4 py-2">
+                                        {% if doc.template %}
+                                            <a href="{{ doc.template.url }}" target="_blank" class="text-blue-500 hover:underline">View Template</a>
+                                        {% else %}
+                                            No Template
+                                        {% endif %}
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        <a href="{% url 'qualifications:doc_requirement' %}?id={{ qualification.id }}&edit={{ doc.id }}" class="text-blue-500 hover:underline mr-2">Edit</a>
+                                        <form method="POST" action="{% url 'qualifications:doc_requirement' %}?id={{ qualification.id }}" class="inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="delete" value="{{ doc.id }}">
+                                            <button type="submit" class="text-red-500 hover:underline" onclick="return confirm('Are you sure you want to delete this document requirement?')">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-600">No document requirements added yet.</p>
+            {% endif %}
+
+            <!-- Back button -->
+            <div class="mt-6">
+                <a href="{% url 'qualifications:view-qualification' %}?id={{ qualification.id }}" class="inline-block bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition">Back to Qualification</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

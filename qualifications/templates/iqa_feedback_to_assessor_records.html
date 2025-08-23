@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}IQA Feedback to Assessors Records{% endblock %}
+
+{% block nav_items %}
+    {% if is_admin %}
+    <a href="{% url 'users:admin_dashboard' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Dashboard</a>
+    {% else %}
+    <a href="{% url 'qualifications:user_dashboard' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Dashboard</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">IQA Feedback Records</h2>
+        <p class="text-gray-600 mb-2"><strong>Institute:</strong> {{ business.name }} (ID: {{ business.business_id }})</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Filter Feedback Records</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="filter_iqa" class="block text-sm font-medium text-gray-700">Feedback Given By (IQA)</label>
+                <select id="filter_iqa" name="iqa_ids" multiple class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    {% for iqa in iqa_users %}
+                    <option value="{{ iqa.id }}">{{ iqa.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="filter_assessor" class="block text-sm font-medium text-gray-700">Feedback Given To (Assessor)</label>
+                {% if is_assessor %}
+                <select id="filter_assessor" name="assessor_ids" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" disabled>
+                    <option value="{{ user_business_id }}" selected>{{ full_name }}</option>
+                </select>
+                {% else %}
+                <select id="filter_assessor" name="assessor_ids" multiple class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    {% for assessor in assessor_users %}
+                    <option value="{{ assessor.id }}">{{ assessor.name }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Records -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Feedback Entries</h3>
+        {% if feedback_data %}
+        <div class="overflow-x-auto">
+            <table id="feedbackTable" class="min-w-full bg-white border">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Feedback Given By</th>
+                        <th class="py-3 px-6 text-left">Feedback Given To</th>
+                        <th class="py-3 px-6 text-left">Sampling Type</th>
+                        <th class="py-3 px-6 text-left">Sampling Date</th>
+                        <th class="py-3 px-6 text-left">Feedback Date</th>
+                        <th class="py-3 px-6 text-left">Comments</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm">
+                    {% for feedback in feedback_data %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-100 feedback-row"
+                        data-iqa-id="{{ feedback.iqa_id }}"
+                        data-assessor-id="{{ feedback.assessor_id }}">
+                        <td class="py-3 px-6">{{ feedback.iqa_name }}</td>
+                        <td class="py-3 px-6">{{ feedback.assessor_name }}</td>
+                        <td class="py-3 px-6">{{ feedback.sampling_type }}</td>
+                        <td class="py-3 px-6">{{ feedback.sampling_date|date:"Y-m-d" }}</td>
+                        <td class="py-3 px-6">{{ feedback.feedback_date|date:"Y-m-d H:i" }}</td>
+                        <td class="py-3 px-6">{{ feedback.comments }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-gray-500">No IQA feedback records available.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .select2-container {
+        width: 100% !important;
+    }
+    .select2-selection__choice {
+        background-color: #3182ce !important;
+        color: white !important;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Initialize Select2 for multi-select dropdowns
+        $('#filter_iqa, #filter_assessor').select2({
+            placeholder: 'Select users',
+            allowClear: true
+        });
+
+        // Handle filter changes
+        $('#filter_iqa, #filter_assessor').on('change', function() {
+            const selectedIqaIds = $('#filter_iqa').val() || [];
+            const selectedAssessorIds = $('#filter_assessor').val() || [];
+
+            console.log('Selected IQA IDs:', selectedIqaIds);
+            console.log('Selected Assessor IDs:', selectedAssessorIds);
+
+            // Log all row IDs for debugging
+            $('#feedbackTable tbody tr.feedback-row').each(function() {
+                const row = $(this);
+                console.log('Row IDs:', {
+                    iqaId: row.data('iqa-id'),
+                    assessorId: row.data('assessor-id')
+                });
+            });
+
+            // Show/hide table rows based on filters
+            $('#feedbackTable tbody tr.feedback-row').each(function() {
+                const row = $(this);
+                const iqaId = String(row.data('iqa-id')); // Ensure string
+                const assessorId = String(row.data('assessor-id')); // Ensure string
+
+                const matchesIqa = selectedIqaIds.length === 0 || selectedIqaIds.includes(iqaId);
+                const matchesAssessor = selectedAssessorIds.length === 0 || selectedAssessorIds.includes(assessorId);
+
+                if (matchesIqa && matchesAssessor) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+
+            // Show empty message if no rows are visible
+            const visibleRows = $('#feedbackTable tbody tr.feedback-row:visible').length;
+            if (visibleRows === 0) {
+                $('#feedbackTable').after('<p class="text-gray-500 mt-4">No feedback records match the selected filters.</p>');
+            } else {
+                $('.text-gray-500.mt-4').remove();
+            }
+        });
+    });
+</script>
+{% endblock %}

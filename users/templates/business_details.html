@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Business Details - {{ business.name }} - AssessEEZ{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'users:superadmin' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Superadmin Dashboard</a>
+    
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-8 px-4 flex-grow">
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Business Info -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ business.name }}</h2>
+        <p class="text-gray-600 mb-2"><strong>Business ID:</strong> {{ business.business_id }}</p>
+        <p class="text-gray-600 mb-2"><strong>Address:</strong> {{ business.address }}</p>
+        <p class="text-gray-600 mb-2"><strong>Website:</strong> {% if business.website %}<a href="{{ business.website }}" class="text-blue-600 hover:underline">{{ business.website }}</a>{% else %}N/A{% endif %}</p>
+    </div>
+
+    <!-- Registrations Table -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">New Registrations</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Role</th>
+                        <th class="py-3 px-6 text-left">This Month</th>
+                        <th class="py-3 px-6 text-left">This Week</th>
+                        <th class="py-3 px-6 text-left">Today</th>
+                        <th class="py-3 px-6 text-left">Total</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm">
+                    <!-- Learners -->
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6">Learners</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'learner' 'month' %}'">{{ registrations.learners.month }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'learner' 'week' %}'">{{ registrations.learners.week }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'learner' 'day' %}'">{{ registrations.learners.day }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'learner' 'total' %}'">{{ registrations.learners.total }}</td>
+                    </tr>
+                    <!-- Assessors -->
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6">Assessors</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'assessor' 'month' %}'">{{ registrations.assessors.month }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'assessor' 'week' %}'">{{ registrations.assessors.week }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'assessor' 'day' %}'">{{ registrations.assessors.day }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'assessor' 'total' %}'">{{ registrations.assessors.total }}</td>
+                    </tr>
+                    <!-- IQA -->
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6">IQA</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'iqa' 'month' %}'">{{ registrations.iqa.month }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'iqa' 'week' %}'">{{ registrations.iqa.week }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'iqa' 'day' %}'">{{ registrations.iqa.day }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'iqa' 'total' %}'">{{ registrations.iqa.total }}</td>
+                    </tr>
+                    <!-- EQA -->
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6">EQA</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'eqa' 'month' %}'">{{ registrations.eqa.month }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'eqa' 'week' %}'">{{ registrations.eqa.week }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'eqa' 'day' %}'">{{ registrations.eqa.day }}</td>
+                        <td class="py-3 px-6 cursor-pointer hover:text-blue-600" onclick="window.location='{% url 'users:admin_users_details' business.business_id 'eqa' 'total' %}'">{{ registrations.eqa.total }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

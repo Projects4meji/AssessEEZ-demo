@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static qualifications_filters %}
+
+{% block title %}Assigned Learners - {{ user_name }} ({{ role_type }}){% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'qualifications:selected_user' user_id=user.id role_type=role_type|lower %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to User Details</a>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Qualification and Institute Details -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ qualification.qualification_title }} ({{ qualification.qualification_number }})</h2>
+        <p class="text-gray-600 mb-2"><strong>Institute:</strong> {{ business.name }} (ID: {{ business.business_id }})</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Learners List -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Assigned Learners</h2>
+        {% if learners %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Learner Name</th>
+                        <th class="py-3 px-6 text-left">Qualification</th>
+                        <th class="py-3 px-6 text-left">Assigned Assessor</th>
+                        <th class="py-3 px-6 text-left">Assigned IQA</th>
+                        <th class="py-3 px-6 text-left">Progress (%)</th>
+                        <th class="py-3 px-6 text-left">IQA Sampling Ratio (%)</th>
+                        <th class="py-3 px-6 text-left">Role</th>
+                        <th class="py-3 px-6 text-left">Status</th>
+                        <th class="py-3 px-6 text-left">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm">
+                    {% for learner in learners %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6">{{ learner.name }}</td>
+                        <td class="py-3 px-6">{{ learner.qualification }}</td>
+                        <td class="py-3 px-6">{{ learner.assessor_name }}</td>
+                        <td class="py-3 px-6">{{ learner.iqa_name }}</td>
+                        <td class="py-3 px-6">
+                            <div class="flex items-center">
+                                <div class="w-24 bg-gray-200 rounded-full h-2.5 mr-2">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ learner.progress }}%"></div>
+                                </div>
+                                {{ learner.progress|floatformat:2 }}%
+                            </div>
+                        </td>
+                        <td class="py-3 px-6">
+                            <div class="flex items-center">
+                                <div class="w-24 bg-gray-200 rounded-full h-2.5 mr-2">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ learner.sampling_ratio }}%"></div>
+                                </div>
+                                {{ learner.sampling_ratio|floatformat:2 }}%
+                            </div>
+                        </td>
+                        <td class="py-3 px-6">{{ learner.role }}</td>
+                        <td class="py-3 px-6">{{ learner.is_active|yesno:"Activated,Deactivated" }}</td>
+                        <td class="py-3 px-6">
+                            <a href="{% url 'qualifications:eqa_view' qualification_id=qualification.id learner_id=learner.learner_id %}" class="text-blue-600 hover:text-blue-800">View</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="py-3 px-6 text-gray-500">No learners assigned to this user for this qualification.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-gray-600">No learners assigned to this user for this qualification.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

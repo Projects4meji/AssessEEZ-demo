@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Folder: {{ folder.name }} - {{ business.name }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-semibold text-blue-800 mb-6">Folder: {{ folder.name }}</h2>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-6 space-y-2">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Add File Form -->
+        <div class="mb-8">
+            <h3 class="text-xl font-semibold text-blue-800 mb-4">Add New File</h3>
+            <form method="post" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-900 mb-1">File Title</label>
+                    <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" value="{{ form.title.value|default_if_none:'' }}" class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600 text-sm px-4 py-2" required>
+                    {% if form.title.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.title.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.file.id_for_label }}" class="block text-sm font-medium text-gray-900 mb-1">File</label>
+                    <input type="file" name="{{ form.file.name }}" id="{{ form.file.id_for_label }}" class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" required>
+                    {% if form.file.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.file.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add File</button>
+            </form>
+        </div>
+
+        <!-- Files Table -->
+        {% if files %}
+        <div class="mb-8">
+            <h3 class="text-xl font-semibold text-blue-800 mb-4">Files</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">File Title</th>
+                            <th class="py-3 px-6 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm">
+                        {% for file in files %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="py-3 px-6">{{ file.title }}</td>
+                            <td class="py-3 px-6 text-right">
+                                <a href="{{ file.file.url }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mr-2">View</a>
+                                <button class="delete-file-button px-3 py-1 rounded text-white bg-red-600 hover:bg-red-700" data-file-id="{{ file.id }}" data-file-title="{{ file.title }}">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-gray-500 mb-8">No files in this folder.</p>
+        {% endif %}
+
+        <!-- Back Button -->
+        <div class="mt-6">
+            <a href="{% url 'qualifications:resources' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Resources</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('.delete-file-button').on('click', function() {
+        const button = $(this);
+        const fileId = button.data('file-id');
+        const fileTitle = button.data('file-title');
+
+        if (confirm(`Are you sure you want to delete the file "${fileTitle}"? This action cannot be undone.`)) {
+            $.ajax({
+                url: '{% url 'qualifications:delete_file' %}',
+                type: 'POST',
+                data: {
+                    file_id: fileId,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        button.closest('tr').remove();
+                        alert(response.message);
+                        if ($('table tbody tr').length === 0) {
+                            $('table').replaceWith('<p class="text-gray-500">No files in this folder.</p>');
+                        }
+                    } else {
+                        alert('Error: ' + response.error);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while deleting the file.');
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

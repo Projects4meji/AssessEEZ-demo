@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resources{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'users:admin_dashboard' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Dashboard</a>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Add Folder Button -->
+    <div class="mb-6">
+        <a href="{% url 'qualifications:add_folder' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm">Add Folder</a>
+    </div>
+    {% if folders %}
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Current Folders</h3>
+        <div class="space-y-4">
+            {% for folder in folders %}
+            <div class="bg-white rounded-lg shadow-md">
+                <button type="button" class="w-full text-left p-4 flex justify-between items-center text-gray-700 hover:bg-gray-100 focus:outline-none" onclick="toggleFolder('folder-{{ folder.id }}')">
+                    <span class="font-medium">{{ folder.name }}</span>
+                    <div class="flex items-center space-x-4">
+                        <a href="{% url 'qualifications:folder_detail' folder.id %}" class="text-sm text-blue-600 hover:underline">View Files</a>
+                        <a href="{% url 'qualifications:edit_folder' folder.id %}" class="text-sm text-blue-600 hover:underline">Edit</a>
+                        <svg id="icon-{{ folder.id }}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                </button>
+                <div id="folder-{{ folder.id }}" class="hidden px-4 pb-4">
+                    <p class="text-gray-600 text-sm">
+                        Qualifications: {{ folder.qualifications|default:"None" }}<br>
+                        Visible to Roles: {{ folder.roles|default:"None" }}
+                    </p>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-500">No folders found.</p>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <p class="text-gray-600 text-sm">No folders found.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleFolder(folderId) {
+    const content = document.getElementById(folderId);
+    const icon = document.getElementById(`icon-${folderId.split('-')[1]}`);
+    content.classList.toggle('hidden');
+    icon.classList.toggle('rotate-180');
+}
+</script>
+{% endblock %}

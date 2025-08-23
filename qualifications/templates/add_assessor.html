@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Assessor{% endblock %}
+
+{% block nav_title %}Add Assessor{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'users:admin_dashboard' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Admin Dashboard</a>
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto mt-8 px-4">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-3xl font-semibold text-gray-800 mb-6 text-center">Add a New Assessor</h2>
+
+            {% if messages %}
+                <div class="mb-6">
+                    {% for message in messages %}
+                        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700{% else %}bg-red-100 text-red-700{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.email.label }}</label>
+                    <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" value="{{ form.email.value|default_if_none:'' }}" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3" required>
+                    {% if form.email.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.email.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.full_name.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.full_name.label }}</label>
+                    <input type="text" name="{{ form.full_name.name }}" id="{{ form.full_name.id_for_label }}" value="{{ form.full_name.value|default_if_none:'' }}" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3" required>
+                    {% if form.full_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.full_name.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.qualifications.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.qualifications.label }}</label>
+                    <div class="mt-1 space-y-2">
+                        {% for qual in form.qualifications.field.queryset %}
+                            <div class="flex items-center">
+                                <input type="checkbox" name="{{ form.qualifications.name }}" id="{{ form.qualifications.id_for_label }}_{{ qual.id }}" value="{{ qual.id }}" {% if qual.id|stringformat:"s" in form.qualifications.value|default:"" %}checked{% endif %} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="{{ form.qualifications.id_for_label }}_{{ qual.id }}" class="ml-2 text-base text-gray-700">{{ qual }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if form.qualifications.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.qualifications.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="inline-flex justify-center py-2 px-6 text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Add Assessor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

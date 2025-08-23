@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static qualifications_filters %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block nav_title %}User Dashboard{% endblock %}
+
+{% block nav_items %}
+    {% if is_learner %}
+        <a href="{% url 'qualifications:notification_view' %}" class="flex items-center bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+            </svg>
+            Notifications
+            {% if unread_notifications %}
+                <span class="ml-2 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1">{{ unread_notifications }}</span>
+            {% endif %}
+        </a>
+    {% endif %}
+    {% if is_iqa and feedback_qualification_id %}
+        <a href="{% url 'qualifications:iqa_feedback_to_assessor' feedback_qualification_id %}" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded text-white">Feedback to Assessors</a>
+    {% endif %}
+    {% if is_iqa or is_assessor and feedback_qualification_id %}
+        <a href="{% url 'qualifications:iqa_feedback_to_assessor_records' feedback_qualification_id %}" class="bg-purple-500 hover:bg-purple-600 px-4 py-2 rounded text-white">IQA Feedback to Assessors Records</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <!-- Main Content -->
+    <div class="container mx-auto mt-8 px-4">
+        <!-- Learner Details -->
+        <div class="bg-yellow-200 p-6 rounded-lg shadow-md mb-8">
+            {% if is_learner and not is_assessor and not is_iqa and not is_eqa and learner_details %}
+                <h3 class="text-2xl font-bold text-blue-900 text-center mb-4">Learner Dashboard</h3>
+                <div class="flex flex-row flex-nowrap gap-4">
+                    <div class="flex-1 min-w-0">
+                        <div class="text-blue-700 text-base font-semibold">Full Name:</div>
+                        <div class="text-blue-900 text-base">{{ learner_details.full_name }}</div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-blue-700 text-base font-semibold">Email Address:</div>
+                        <div class="text-blue-900 text-base">{{ learner_details.email }}</div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-blue-700 text-base font-semibold">Date of Birth:</div>
+                        <div class="text-blue-900 text-base">{{ learner_details.dob|date:"Y-m-d"|default:"N/A" }}</div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-blue-700 text-base font-semibold">Phone Number:</div>
+                        <div class="text-blue-900 text-base">{{ learner_details.phone_number }}</div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-blue-700 text-base font-semibold">Ethnicity:</div>
+                        <div class="text-blue-900 text-base">{{ learner_details.ethnicity }}</div>
+                    </div>
+                </div>
+            {% else %}
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Welcome, {{ full_name }}</h2>
+            {% endif %}
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+            <div class="mb-4">
+                <ul class="messages space-y-2">
+                    {% for message in messages %}
+                        <li class="{% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %} p-4 rounded-lg">
+                            {{ message }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <!-- Roles and Qualifications List -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Qualifications and Roles</h2>
+            {% if roles %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border">
+                        <thead>
+                            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                                <th class="py-3 px-6 text-left">Qualification Title</th>
+                                <th class="py-3 px-6 text-left">Qualification Number</th>
+                                {% if is_learner %}
+                                    <th class="py-3 px-6 text-left">Assigned Assessor</th>
+                                {% endif %}
+                                {% if is_assessor or is_iqa %}
+                                    <th class="py-3 px-6 text-left">Role</th>
+                                {% endif %}
+                                {% if is_learner %}
+                                    <th class="py-3 px-6 text-left">Assessor Email</th>
+                                {% endif %}
+                                <th class="py-3 px-6 text-left">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600 text-sm">
+                            {% for role in roles %}
+                                <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                    <td class="py-3 px-6">{{ role.qualification.qualification_title }}</td>
+                                    <td class="py-3 px-6">{{ role.qualification.qualification_number }}</td>
+                                    {% if is_learner %}
+                                        <td class="py-3 px-6">
+                                            {% if role.role == 'Learner' %}
+                                                {{ role.assessor_name|default:"No Assessor Assigned" }}
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                    {% if is_assessor or is_iqa %}
+                                        <td class="py-3 px-6">{{ role.role }}</td>
+                                    {% endif %}
+                                    {% if is_learner %}
+                                        <td class="py-3 px-6">{{ role.assessor_email|default:"N/A" }}</td>
+                                    {% endif %}
+                                    <td class="py-3 px-6">
+                                        {% if role.action_url %}
+                                            <a href="{{ role.action_url }}" class="text-blue-600 hover:underline">View</a>
+                                        {% else %}
+                                            <span class="text-gray-500">Details not available</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-500">You are not associated with any qualifications or roles in this business.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

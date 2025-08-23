@@ -1,0 +1,590 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AssessEEZ{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'favicon-32x32.png' %}" sizes="32x32">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+    <style>
+        /* Override conflicting styles from external CSS files */
+        .nav-container .container {
+            max-width: none !important;
+            width: auto !important;
+            padding: 0 !important;
+            margin: 0 auto !important;
+        }
+        
+        .footer-container .container {
+            max-width: none !important;
+            width: auto !important;
+            padding: 0 !important;
+            margin: 0 auto !important;
+        }
+        
+        /* Ensure footer text styling is preserved */
+        footer p {
+            line-height: 1.5 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        /* Enhanced Navigation Styles */
+        .nav-container {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 50%, #1e293b 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: visible;
+            z-index: 9998 !important;
+        }
+        
+        .nav-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="nav-grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23nav-grain)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .nav-content {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .nav-link:hover {
+            color: #fbbf24 !important;
+            transform: translateY(-1px);
+        }
+        
+        /* Dropdown menu styles */
+        .group:hover .group-hover\:opacity-100 {
+            opacity: 1 !important;
+        }
+        
+        .group:hover .group-hover\:visible {
+            visibility: visible !important;
+        }
+        
+        .group:hover .group-hover\:scale-100 {
+            transform: scale(1) !important;
+        }
+        
+        /* Ensure dropdowns are properly positioned and visible */
+        .group .absolute {
+            z-index: 9999 !important;
+        }
+        
+        /* Ensure the navigation container has proper z-index */
+        .nav-container {
+            z-index: 9998 !important;
+            position: relative;
+        }
+        
+        /* Additional dropdown styling */
+        .group:hover .bg-white {
+            background-color: white !important;
+        }
+        
+        .group:hover .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+        }
+        
+        /* Enhanced dropdown hover effects */
+        .group:hover .shadow-2xl {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+        }
+        
+        .group:hover .bg-gradient-to-br {
+            background: linear-gradient(to bottom right, #ffffff, #eff6ff, #dbeafe) !important;
+        }
+        
+        /* Dropdown item hover animations */
+        .group .absolute a:hover {
+            transform: scale(1.05) translateX(5px) !important;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        /* Ensure proper contrast for dropdown items */
+        .group .absolute a {
+            color: #1f2937 !important; /* Dark gray for good contrast */
+        }
+        
+        .group .absolute a:hover {
+            color: #1f2937 !important; /* Keep dark text on light background */
+        }
+        
+        /* Yellow dot animation */
+        .group .absolute a:hover .bg-yellow-400 {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Enhanced Navigation Link Animations */
+        .nav-link {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::before {
+            width: 100%;
+        }
+        
+        /* Gradient text animation for dropdown buttons */
+        .bg-gradient-to-r.from-yellow-400.to-yellow-500.bg-clip-text {
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        
+        /* Enhanced hover effects for navigation */
+        .nav-link:hover {
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        
+        /* Ensure dropdown content is visible on hover */
+        .group:hover .opacity-0 {
+            opacity: 1 !important;
+        }
+        
+        .group:hover .invisible {
+            visibility: visible !important;
+        }
+        
+        /* Add hover delay to prevent dropdown from disappearing too quickly */
+        .group {
+            position: relative;
+        }
+        
+        .group .absolute {
+            transition-delay: 0.1s;
+        }
+        
+        /* Ensure dropdown stays visible when hovering over the dropdown content */
+        .group .absolute:hover {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: scale(1) !important;
+        }
+        
+        /* Ensure hero sections and other content don't interfere with navigation */
+        .hero-gradient,
+        .bg-gradient-to-br,
+        .bg-gradient-to-r {
+            z-index: 1 !important;
+        }
+        
+        /* Ensure main content doesn't overlap navigation */
+        .main-content {
+            z-index: 1 !important;
+            position: relative;
+        }
+        
+        .login-btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        }
+        
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .login-btn:hover::before {
+            left: 100%;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .header-logo {
+            border: 3px solid #fbbf24;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2);
+        }
+        
+        .header-logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
+        }
+        
+        /* Mobile menu styles */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 8px;
+        }
+        
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+        
+        /* Mobile dropdown styles */
+        .mobile-dropdown-btn.active svg {
+            transform: rotate(180deg);
+        }
+        
+        .mobile-dropdown-content {
+            transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+                padding: 1rem;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            }
+        }
+        
+        /* Ensure content area uses proper container styling */
+        .main-content .container {
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 1rem !important;
+        }
+        
+        @media (min-width: 640px) {
+            .main-content .container {
+                padding: 0 1.5rem !important;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .main-content .container {
+                padding: 0 2rem !important;
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <!-- Enhanced Navigation Bar -->
+    <nav class="nav-container text-white py-4 shadow-lg">
+        <div class="container mx-auto nav-content">
+            <div class="flex justify-between items-center px-4 sm:px-6 lg:px-8">
+                <!-- Logo -->
+                <a href="{% url 'home' %}" class="flex items-center space-x-3 group">
+                    <img src="{% static 'images/assesseez_logo.png' %}" alt="AssessEEZ Logo" class="h-12 w-12 header-logo object-contain">
+                    <span class="text-xl font-bold text-white group-hover:text-yellow-300 transition-colors duration-300">AssessEEZ</span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{% url 'home' %}" class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 transform hover:scale-105">Home</a>
+                    
+                    <!-- Key Features Dropdown -->
+                    <div class="relative group">
+                                        <button class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 transform hover:scale-105 flex items-center">
+                    <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent font-bold">Key</span>
+                    <span class="ml-1">Features</span>
+                    <svg class="w-4 h-4 ml-1 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                        <div class="absolute top-full left-0 mt-2 w-64 bg-gradient-to-br from-white via-blue-50 to-blue-100 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top scale-95 group-hover:scale-100 border border-blue-200" style="pointer-events: none; z-index: 9999;">
+                            <div class="py-3" style="pointer-events: auto;">
+                                <a href="{% url 'administrator' %}" class="block px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 rounded-lg mx-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/item">
+                                    <div class="font-semibold flex items-center group-hover/item:text-blue-700">
+                                        <div class="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover/item:bg-yellow-500"></div>
+                                        Admin Capabilities
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-1 ml-5 group-hover/item:text-blue-600">Manage qualifications and users</div>
+                                </a>
+                                <a href="{% url 'learner' %}" class="block px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 rounded-lg mx-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/item">
+                                    <div class="font-semibold flex items-center group-hover/item:text-blue-700">
+                                        <div class="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover/item:bg-yellow-500"></div>
+                                        Learner Experience
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-1 ml-5 group-hover/item:text-blue-600">Personalized dashboard and submissions</div>
+                                </a>
+                                <a href="{% url 'assessor' %}" class="block px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 rounded-lg mx-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/item">
+                                    <div class="font-semibold flex items-center group-hover/item:text-blue-700">
+                                        <div class="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover/item:bg-yellow-500"></div>
+                                        Assessor Tools
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-1 ml-5 group-hover/item:text-blue-600">Efficient assessment management</div>
+                                </a>
+                                <a href="{% url 'iqa' %}" class="block px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 rounded-lg mx-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/item">
+                                    <div class="font-semibold flex items-center group-hover/item:text-blue-700">
+                                        <div class="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover/item:bg-yellow-500"></div>
+                                        IQA Oversight
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-1 ml-5 group-hover/item:text-blue-600">Quality assurance and feedback</div>
+                                </a>
+                                <a href="{% url 'eqa' %}" class="block px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 rounded-lg mx-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/item">
+                                    <div class="font-semibold flex items-center group-hover/item:text-blue-700">
+                                        <div class="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover/item:bg-yellow-500"></div>
+                                        EQA Oversight
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-1 ml-5 group-hover/item:text-blue-600">External quality assurance</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'pricing' %}" class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 transform hover:scale-105">Pricing</a>
+                    
+                    <!-- Resources Dropdown -->
+                    <div class="relative group">
+                                        <button class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 transform hover:scale-105 flex items-center">
+                    <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent font-bold">Resources</span>
+                    <svg class="w-4 h-4 ml-1 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                        <div class="absolute top-full left-0 mt-2 w-48 bg-gradient-to-br from-white via-blue-50 to-blue-100 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top scale-95 group-hover:scale-100 border border-blue-200" style="pointer-events: none; z-index: 9999;">
+                            <div class="py-3" style="pointer-events: auto;">
+                                <a href="#blog" class="block px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 rounded-lg mx-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/item">
+                                    <div class="font-semibold flex items-center group-hover/item:text-blue-700">
+                                        <div class="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover/item:bg-yellow-500"></div>
+                                        Blog
+                                    </div>
+                                </a>
+                                <a href="{% url 'FAQ' %}" class="block px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 rounded-lg mx-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/item">
+                                    <div class="font-semibold flex items-center group-hover/item:text-blue-700">
+                                        <div class="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover/item:bg-yellow-500"></div>
+                                        FAQs
+                                    </div>
+                                </a>
+                                <a href="#user-guides" class="block px-4 py-3 text-gray-800 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 rounded-lg mx-2 transition-all duration-300 transform hover:scale-105 hover:shadow-lg group/item">
+                                    <div class="font-semibold flex items-center group-hover/item:text-blue-700">
+                                        <div class="w-2 h-2 bg-yellow-400 rounded-full mr-3 group-hover/item:bg-yellow-500"></div>
+                                        User Guides
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'contact' %}" class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 transform hover:scale-105">Contact Us</a>
+                    <a href="{% url 'login' %}" class="login-btn text-lg font-semibold text-gray-800 px-6 py-2 rounded-lg mb-1">Login</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="mobile-menu-btn md:hidden">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div class="nav-links md:hidden">
+                <div class="px-4 py-6 space-y-4">
+                    <a href="{% url 'home' %}" class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 block py-2">Home</a>
+                    
+                    <!-- Mobile Key Features -->
+                    <div class="mobile-dropdown">
+                        <button class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 flex items-center justify-between w-full py-2 mobile-dropdown-btn">
+                            <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent font-bold">Key</span>
+                            <span class="ml-1">Features</span>
+                            <svg class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="mobile-dropdown-content hidden pl-4 space-y-2 mt-2">
+                            <a href="{% url 'administrator' %}" class="nav-link text-base font-medium text-gray-200 block py-1">Admin Capabilities</a>
+                            <a href="{% url 'learner' %}" class="nav-link text-base font-medium text-gray-200 block py-1">Learner Experience</a>
+                            <a href="{% url 'assessor' %}" class="nav-link text-base font-medium text-gray-200 block py-1">Assessor Tools</a>
+                            <a href="{% url 'iqa' %}" class="nav-link text-base font-medium text-gray-200 block py-1">IQA Oversight</a>
+                            <a href="{% url 'eqa' %}" class="nav-link text-base font-medium text-gray-200 block py-1">EQA Oversight</a>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'pricing' %}" class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 block py-2">Pricing</a>
+                    
+                    <!-- Mobile Resources -->
+                    <div class="mobile-dropdown">
+                        <button class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 flex items-center justify-between w-full py-2 mobile-dropdown-btn">
+                            <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent font-bold">Resources</span>
+                            <svg class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="mobile-dropdown-content hidden pl-4 space-y-2 mt-2">
+                            <a href="#blog" class="nav-link text-base font-medium text-gray-200 block py-1">Blog</a>
+                            <a href="{% url 'FAQ' %}" class="nav-link text-base font-medium text-gray-200 block py-1">FAQs</a>
+                            <a href="#user-guides" class="nav-link text-base font-medium text-gray-200 block py-1">User Guides</a>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'contact' %}" class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 block py-2">Contact Us</a>
+                    <a href="{% url 'login' %}" class="login-btn text-lg font-semibold text-gray-800 px-6 py-2 rounded-lg inline-block mt-4 mb-2">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Enhanced Footer -->
+    <footer class="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-8 px-6 mt-auto footer-container">
+        <div class="container mx-auto">
+            <div class="flex flex-col items-center space-y-4">
+                <div class="text-sm">
+                    <a href="{% url 'privacy_policy' %}" class="hover:text-yellow-300 transition-colors duration-300 font-medium">Privacy Policy</a> 
+                    <span class="mx-3 text-blue-200">|</span> 
+                    <a href="{% url 'user_agreement' %}" class="hover:text-yellow-300 transition-colors duration-300 font-medium">User Agreement</a>
+                </div>
+                <p class="text-xs text-center text-blue-100">© {% now "Y" %} Paradigm Qualifications Ltd. All rights reserved. Company number 14078939 Registered in England and Wales</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileMenuBtn && navLinks) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    
+                    // Animate hamburger menu
+                    const spans = this.querySelectorAll('span');
+                    spans.forEach((span, index) => {
+                        if (navLinks.classList.contains('active')) {
+                            if (index === 0) span.style.transform = 'rotate(45deg) translate(5px, 5px)';
+                            if (index === 1) span.style.opacity = '0';
+                            if (index === 2) span.style.transform = 'rotate(-45deg) translate(7px, -6px)';
+                        } else {
+                            span.style.transform = 'none';
+                            span.style.opacity = '1';
+                        }
+                    });
+                });
+            }
+            
+            // Mobile dropdown functionality
+            const mobileDropdownBtns = document.querySelectorAll('.mobile-dropdown-btn');
+            mobileDropdownBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const dropdownContent = this.nextElementSibling;
+                    const svg = this.querySelector('svg');
+                    
+                    // Toggle active class on button
+                    this.classList.toggle('active');
+                    
+                    // Toggle dropdown content
+                    if (dropdownContent.classList.contains('hidden')) {
+                        dropdownContent.classList.remove('hidden');
+                        dropdownContent.style.maxHeight = dropdownContent.scrollHeight + 'px';
+                    } else {
+                        dropdownContent.classList.add('hidden');
+                        dropdownContent.style.maxHeight = '0';
+                    }
+                });
+            });
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!mobileMenuBtn.contains(e.target) && !navLinks.contains(e.target)) {
+                    navLinks.classList.remove('active');
+                    const spans = mobileMenuBtn.querySelectorAll('span');
+                    spans.forEach(span => {
+                        span.style.transform = 'none';
+                        span.style.opacity = '1';
+                    });
+                }
+            });
+        });
+    </script>
+    
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

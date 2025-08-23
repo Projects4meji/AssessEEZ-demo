@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add EQA - AssessEEZ{% endblock %}
+
+{% block nav_title %}Add External Quality Assurer (EQA){% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'users:admin_dashboard' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Admin Dashboard</a>
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto mt-8 px-4">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Add External Quality Assurer (EQA)</h2>
+            
+            {% if messages %}
+                <div class="mb-4">
+                    <ul class="messages space-y-2">
+                        {% for message in messages %}
+                            <li class="{% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %} p-4 rounded-lg">
+                                {{ message }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <form method="post" id="eqa-form" class="space-y-6" autocomplete="off">
+                {% csrf_token %}
+                
+                <!-- Email Field -->
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ form.email.label }}</label>
+                    <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" value=""
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                    {% if form.email.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.email.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Full Name Field -->
+                <div>
+                    <label for="{{ form.full_name.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ form.full_name.label }}</label>
+                    <input type="text" name="{{ form.full_name.name }}" id="{{ form.full_name.id_for_label }}" value=""
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                    {% if form.full_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.full_name.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Qualifications Field -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">{{ form.qualifications.label }}</label>
+                    <div class="mt-1 space-y-2" id="qualifications-container">
+                        {% for checkbox in form.qualifications %}
+                            <div class="flex items-center">
+                                {{ checkbox.tag|safe }}
+                                <label for="{{ checkbox.id_for_label }}" class="ml-2 text-sm text-gray-700">{{ checkbox.choice_label }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if form.qualifications.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.qualifications.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Learners Field -->
+                <div id="learners-container">
+                    <label class="block text-sm font-medium text-gray-700">{{ form.learners.label }}</label>
+                    <div class="mt-1 space-y-2" id="learners-list">
+                        <p class="text-sm text-gray-500">Select a qualification to view learners.</p>
+                    </div>
+                    {% if form.learners.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.learners.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-200">
+                        Add EQA
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded, initializing form...');
+            
+            // Debug DOM elements
+            const qualContainer = document.querySelector('#qualifications-container');
+            const learnersContainer = document.querySelector('#learners-container');
+            const learnersList = document.querySelector('#learners-list');
+            const qualCheckboxes = document.querySelectorAll('input[name="qualifications"]');
+            
+            console.log('DOM elements:', {
+                qualContainer: !!qualContainer,
+                qualCheckboxesCount: qualCheckboxes.length,
+                learnersContainer: !!learnersContainer,
+                learnersList: !!learnersList
+            });
+
+            if (!qualContainer || !qualCheckboxes.length || !learnersContainer || !learnersList) {
+                console.error('Required DOM elements not found:', {
+                    qualContainer: !!qualContainer,
+                    qualCheckboxesCount: qualCheckboxes.length,
+                    learnersContainer: !!learnersContainer,
+                    learnersList: !!learnersList
+                });
+                return;
+            }
+
+            // Log checkbox details
+            qualCheckboxes.forEach(cb => {
+                console.log('Qualification checkbox:', {
+                    id: cb.id,
+                    value: cb.value,
+                    name: cb.name,
+                    checked: cb.checked
+                });
+            });
+
+            // Reset form and clear stale data
+            console.log('Resetting form to clear stale data...');
+            const form = document.querySelector('#eqa-form');
+            form.reset();
+            learnersList.innerHTML = '<p class="mt-1 text-sm text-gray-500">Select a qualification to view learners.</p>';
+
+            // Function to fetch learners
+            function fetchLearners(qualIds) {
+                if (qualIds.length === 0) {
+                    learnersList.innerHTML = `
+                        <p class="mt-1 text-sm text-gray-500">No qualifications selected.</p>
+                    `;
+                    return;
+                }
+
+                const url = `/qualifications/get_learners/?qual_ids=${encodeURIComponent(qualIds.join(','))}`;
+                console.log('Fetching learners from:', url);
+
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include'
+                })
+                .then(response => {
+                    console.log('Fetch response:', {
+                        status: response.status,
+                        ok: response.ok,
+                        url: response.url,
+                        headers: Object.fromEntries(response.headers.entries())
+                    });
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(`HTTP error! Status: ${response.status}, Response: ${text}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Received data:', JSON.stringify(data, null));
+                    if (data.error) {
+                        learnersList.innerHTML = `
+                            <p class="mt-1 text-sm text-red-600">Error: ${data.error}</p>
+                        `;
+                        return;
+                    }
+                    if (!data.learners || data.learners_list.length === 0) {
+                        learnersList.innerHTML = `
+                            <p class="mt-1 text-sm text-gray-500">No learners available.</p>
+                        `;
+                        return;
+                    }
+
+                    let html = '<ul class="space-y-2">';
+                    data.learners.forEach(learner => {
+                        html += `
+                            <li class="flex items-center">
+                                <input type="checkbox" name="learners" value="${learner.id}" id="learner_${learner.id}"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="learner_${learner.id}" class="ml-2 text-sm text-gray-700">
+                                    ${learner.user.full_name} (${learner.qualification.qualification_title})
+                                </label>
+                            </li>
+                        `;
+                    });
+                    html += '</ul>';
+                    learnersList.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error.message);
+                    learnersList.innerHTML = `
+                        <p class="mt-1 text-sm text-red-600">Error loading learners: ${error.message}</p>
+                    `;
+                });
+            }
+
+            // Attach change event handlers
+            console.log('Attaching change event listeners...');
+            qualCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    console.log('Qualification checkbox changed:', {
+                        id: this.id,
+                        value: this.value,
+                        checked: this.checked
+                    });
+                    const qualIds = Array.from(document.querySelectorAll('input[name="qualifications"]:checked'))
+                        .map(input => input.value.trim())
+                        .filter(id => id);
+                    console.log('Selected qualification IDs:', qualIds);
+                    fetchLearners(qualIds);
+                });
+            });
+
+            // Initialize with pre-selected qualifications
+            const initialQualIds = Array.from(qualCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value.trim())
+                .filter(id => id);
+            if (initialQualIds.length > 0) {
+                console.log('Initial selected qualification IDs:', initialQualIds);
+                fetchLearners(initialQualIds);
+            }
+
+            // Form submission handler
+            form.addEventListener('submit', function(event) {
+                const qualIds = Array.from(document.querySelectorAll('input[name="qualifications"]:checked'))
+                    .map(input => input.value.trim())
+                    .filter(id => id);
+                const learnerIds = Array.from(document.querySelectorAll('input[name="learners"]:checked'))
+                    .map(input => input.value.trim())
+                    .filter(id => id);
+                
+                console.log('Form submission data:', {
+                    email: form.querySelector('input[name="email"]').value,
+                    full_name: form.querySelector('input[name="full_name"]').value,
+                    qualifications: qualIds,
+                    learners: learnerIds
+                });
+
+                if (qualIds.length === 0) {
+                    event.preventDefault();
+                    alert('Please select at least one qualification.');
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,501 @@
+{% extends 'base1.html' %}
+{% load static %}
+
+{% block title %}Pricing - AssessEEZ{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-24 relative overflow-hidden">
+    <!-- Animated Background Elements -->
+    <div class="absolute inset-0">
+        <div class="absolute top-20 left-1/4 w-16 h-16 bg-blue-300 opacity-20 rounded-full animate-ping"></div>
+        <div class="absolute bottom-20 right-1/4 w-12 h-12 bg-blue-300 opacity-15 rounded-full animate-bounce"></div>
+        <div class="absolute top-1/2 left-1/3 w-8 h-8 bg-yellow-300 opacity-25 rounded-full animate-pulse"></div>
+    </div>
+    
+    <div class="container mx-auto max-w-screen-xl px-6 md:px-12 lg:px-16 text-center relative z-10">
+        <div class="animate-float">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-yellow-100 to-yellow-300 bg-clip-text text-transparent">
+                Flexible Pricing for Your Needs
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto leading-relaxed">
+                Choose a plan that suits your assessment management requirements with transparent and affordable pricing.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Table Section -->
+<section class="py-24 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, #3b82f6 2px, transparent 2px), radial-gradient(circle at 75% 75%, #3b82f6 2px, transparent 2px); background-size: 50px 50px;"></div>
+    </div>
+    
+    <div class="container mx-auto max-w-screen-xl px-6 md:px-12 lg:px-16 relative z-10">
+        <!-- Section Header -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Pricing Plans</h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Transparent pricing with no hidden costs. Choose the option that works best for your organization.</p>
+        </div>
+        
+        <!-- Pricing Cards -->
+        <div class="grid md:grid-cols-2 gap-8 mb-16">
+            <!-- Monthly Plan Card -->
+            <div class="pricing-card group">
+                <div class="bg-white rounded-3xl shadow-xl p-8 transform hover:scale-105 transition-all duration-500 hover:shadow-2xl border border-gray-100">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 transform group-hover:rotate-12 transition-transform duration-300">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Monthly Plan</h3>
+                        <p class="text-gray-600">Perfect for growing organizations</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
+                            <span class="text-gray-700 font-medium">Per User Fee</span>
+                            <span class="text-2xl font-bold text-blue-600">£1.90</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl">
+                            <span class="text-gray-700 font-medium">Free Assessors</span>
+                            <span class="text-green-600 font-semibold">✓</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl">
+                            <span class="text-gray-700 font-medium">Free IQA Accounts</span>
+                            <span class="text-green-600 font-semibold">✓</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl">
+                            <span class="text-gray-700 font-medium">Free EQA Accounts</span>
+                            <span class="text-green-600 font-semibold">✓</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-xl">
+                            <span class="text-gray-700 font-medium">Fair Usage Policy</span>
+                            <span class="text-yellow-600 font-semibold">Applies</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <p class="text-sm text-gray-500 mb-4">+VAT where applicable</p>
+                        <button id="monthly-checkout" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                            </svg>
+                            Subscribe Monthly
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- One-Off Plan Card -->
+            <div class="pricing-card group">
+                <div class="bg-white rounded-3xl shadow-xl p-8 transform hover:scale-105 transition-all duration-500 hover:shadow-2xl border border-gray-100 relative overflow-hidden">
+                    <!-- Popular Badge -->
+                    <div class="absolute top-6 right-6">
+                        <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-800 text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                            POPULAR
+                        </span>
+                    </div>
+                    
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 transform group-hover:rotate-12 transition-transform duration-300">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">One-Off Plan</h3>
+                        <p class="text-gray-600">Best for established organizations</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-xl">
+                            <span class="text-gray-700 font-medium">Per User Fee</span>
+                            <span class="text-2xl font-bold text-yellow-600">£19</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl">
+                            <span class="text-gray-700 font-medium">Free Assessors</span>
+                            <span class="text-green-600 font-semibold">✓</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl">
+                            <span class="text-gray-700 font-medium">Free IQA Accounts</span>
+                            <span class="text-green-600 font-semibold">✓</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl">
+                            <span class="text-gray-700 font-medium">Free EQA Accounts</span>
+                            <span class="text-green-600 font-semibold">✓</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-xl">
+                            <span class="text-gray-700 font-medium">Fair Usage Policy</span>
+                            <span class="text-yellow-600 font-semibold">Applies</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <p class="text-sm text-gray-500 mb-4">+VAT where applicable</p>
+                        <button id="oneoff-checkout" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-800 font-semibold rounded-xl hover:from-yellow-500 hover:to-yellow-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                            </svg>
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Additional Information -->
+        <div class="text-center">
+            <p class="text-gray-600 mb-8 text-lg">
+                For detailed Fee and Pricing Policy, read the 
+                <a href="{% url 'user_agreement' %}" class="text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors duration-300">
+                    user agreement
+                </a>.
+            </p>
+            
+            <!-- CTA Section -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-3xl p-8 text-white shadow-2xl">
+                <h3 class="text-2xl font-bold mb-4">Ready to Get Started?</h3>
+                <p class="text-blue-100 mb-6 max-w-2xl mx-auto">
+                    Join thousands of organizations already using AssessEEZ to streamline their assessment processes.
+                </p>
+                <a href="{% url 'contact' %}" class="inline-flex items-center px-8 py-4 bg-yellow-400 text-gray-800 font-bold rounded-xl hover:bg-yellow-300 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-lg">
+                    Contact Us Today
+                    <svg class="w-6 h-6 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stripe Checkout Modal -->
+<div id="stripe-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Secure Payment</h3>
+            <p class="text-gray-600 mb-6">You will be redirected to Stripe to complete your payment.</p>
+            <div class="flex space-x-3">
+                <button id="confirm-checkout" class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors duration-300">
+                    Continue to Payment
+                </button>
+                <button id="cancel-checkout" class="flex-1 bg-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-400 transition-colors duration-300">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Enhanced Pricing Page Styles */
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .pricing-card {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease;
+    }
+
+    .pricing-card.animate {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Enhanced hover effects */
+    .pricing-card:hover {
+        transform: translateY(-10px) scale(1.02);
+    }
+
+    /* Ensure icon backgrounds maintain their original colors on hover */
+    .pricing-card .bg-gradient-to-br.from-blue-500.to-blue-600 {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    }
+    .pricing-card:hover .bg-gradient-to-br.from-blue-500.to-blue-600 {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    }
+
+    .pricing-card .bg-gradient-to-br.from-yellow-400.to-yellow-500 {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+    }
+    .pricing-card:hover .bg-gradient-to-br.from-yellow-400.to-yellow-500 {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+    }
+
+    /* Gradient text animation */
+    .bg-gradient-to-r.from-white.via-yellow-100.to-yellow-300 {
+        background-size: 200% 200%;
+        animation: gradientShift 3s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .text-5xl {
+            font-size: 2.5rem !important;
+        }
+        
+        .text-4xl {
+            font-size: 2rem !important;
+        }
+        
+        .p-8 {
+            padding: 1.5rem !important;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .p-8 {
+            padding: 1rem !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+    // Initialize Stripe
+    const stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
+    
+    // Pricing data
+    const pricingData = {
+        monthly: {
+            price: 190, // £1.90 in pence
+            currency: 'gbp',
+            name: 'Monthly Subscription',
+            description: 'AssessEEZ Monthly Plan - £1.90 per user per month'
+        },
+        oneoff: {
+            price: 1900, // £19.00 in pence
+            currency: 'gbp',
+            name: 'One-Off Purchase',
+            description: 'AssessEEZ One-Off Plan - £19 per user'
+        }
+    };
+    
+    // Monthly Plan Checkout
+    document.getElementById('monthly-checkout').addEventListener('click', function() {
+        showCheckoutModal('monthly');
+    });
+    
+    // One-Off Plan Checkout
+    document.getElementById('oneoff-checkout').addEventListener('click', function() {
+        showCheckoutModal('oneoff');
+    });
+    
+    // Show checkout modal
+    function showCheckoutModal(planType) {
+        const modal = document.getElementById('stripe-modal');
+        const confirmBtn = document.getElementById('confirm-checkout');
+        
+        // Update modal content based on plan
+        const planData = pricingData[planType];
+        modal.querySelector('p').textContent = `You will be redirected to Stripe to complete your payment for ${planData.name}.`;
+        
+        // Store plan type for confirmation
+        confirmBtn.dataset.plan = planType;
+        
+        modal.classList.remove('hidden');
+    }
+    
+    // Confirm checkout
+    document.getElementById('confirm-checkout').addEventListener('click', function() {
+        const planType = this.dataset.plan;
+        const planData = pricingData[planType];
+        
+        // Create checkout session
+        createCheckoutSession(planType, planData);
+    });
+    
+    // Cancel checkout
+    document.getElementById('cancel-checkout').addEventListener('click', function() {
+        document.getElementById('stripe-modal').classList.add('hidden');
+    });
+    
+    // Close modal when clicking outside
+    document.getElementById('stripe-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.add('hidden');
+        }
+    });
+    
+    // Create Stripe checkout session
+    async function createCheckoutSession(planType, planData) {
+        try {
+            // Show loading state
+            const confirmBtn = document.getElementById('confirm-checkout');
+            const originalText = confirmBtn.textContent;
+            confirmBtn.textContent = 'Processing...';
+            confirmBtn.disabled = true;
+            
+            // Make API call to your backend to create checkout session
+            const response = await fetch('/api/create-checkout-session/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    plan_type: planType,
+                    price: planData.price,
+                    currency: planData.currency,
+                    name: planData.name,
+                    description: planData.description
+                })
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(`Failed to create checkout session: ${response.status} ${response.statusText}. ${errorData.error || ''}`);
+            }
+            
+            const session = await response.json();
+            
+            // Redirect to Stripe Checkout
+            const result = await stripe.redirectToCheckout({
+                sessionId: session.id
+            });
+            
+            if (result.error) {
+                throw new Error(result.error.message);
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('There was an error processing your request. Please try again.');
+            
+            // Reset button state
+            const confirmBtn = document.getElementById('confirm-checkout');
+            confirmBtn.textContent = 'Continue to Payment';
+            confirmBtn.disabled = false;
+        }
+    }
+    
+    // Get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    // Intersection Observer for pricing cards
+    document.addEventListener('DOMContentLoaded', function() {
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all pricing cards
+        const pricingCards = document.querySelectorAll('.pricing-card');
+        pricingCards.forEach((card, index) => {
+            observer.observe(card);
+            // Add staggered animation delay
+            card.style.transitionDelay = `${index * 0.2}s`;
+        });
+
+        // Add floating animation to background elements
+        const floatingElements = document.querySelectorAll('.animate-ping, .animate-bounce, .animate-pulse');
+        floatingElements.forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.5}s`;
+        });
+
+        // Add ripple effect to CTA buttons
+        const ctaButtons = document.querySelectorAll('a[href*="contact"]');
+        ctaButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+
+<style>
+    /* Ripple effect styles */
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.6);
+        transform: scale(0);
+        animation: ripple-animation 0.6s linear;
+        pointer-events: none;
+    }
+
+    @keyframes ripple-animation {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+</style>
+{% endblock %}

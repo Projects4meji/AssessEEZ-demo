@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Qualification List{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'users:admin_dashboard' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Dashboard</a>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-8 px-4">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-semibold text-gray-800">Qualifications</h2>
+            <a href="{% url 'qualifications:add-qualification' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">Add Qualification</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border rounded-lg">
+                <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <tr>
+                        <th class="py-3 px-6 text-left">Qualification Title</th>
+                        <th class="py-3 px-6 text-left">Qualification Number</th>
+                        <th class="py-3 px-6 text-left">Awarding Body</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm">
+                    {% for qual in qualifications %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer" onclick="window.location='/qualifications/view/?id={{ qual.id }}';">
+                        <td class="py-3 px-6">{{ qual.qualification_title }}</td>
+                        <td class="py-3 px-6">{{ qual.qualification_number }}</td>
+                        <td class="py-3 px-6">{{ qual.awarding_body }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="py-3 px-6 text-center text-gray-500">No qualifications found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

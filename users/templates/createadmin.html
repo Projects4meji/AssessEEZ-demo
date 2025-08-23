@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Admin - AssessEEZ{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'users:superadmin' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back</a>
+    
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-8 px-4">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Create a New Admin Account</h2>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-6 space-y-2">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700{% else %}bg-red-100 text-red-700{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Form -->
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email ID</label>
+                <input type="email" name="email" id="email" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm py-2 px-3" required>
+            </div>
+
+            <div>
+                <label for="admin_name" class="block text-sm font-medium text-gray-700">Admin Name</label>
+                <input type="text" name="admin_name" id="admin_name" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm py-2 px-3" required>
+            </div>
+
+            <div>
+                <label for="business_name" class="block text-sm font-medium text-gray-700">Business Name</label>
+                <input type="text" name="business_name" id="business_name" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm py-2 px-3" required>
+            </div>
+
+            <div>
+                <label for="business_address" class="block text-sm font-medium text-gray-700">Business Address</label>
+                <input type="text" name="business_address" id="business_address" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm py-2 px-3" required>
+            </div>
+
+            <div>
+                <label for="business_website" class="block text-sm font-medium text-gray-700">Business Website (optional)</label>
+                <input type="url" name="business_website" id="business_website" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm py-2 px-3">
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="inline-flex justify-center py-2 px-6 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Create Admin
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

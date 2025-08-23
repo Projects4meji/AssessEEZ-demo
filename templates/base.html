@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AssessEEZ{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'favicon-32x32.png' %}" sizes="32x32">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <style>
+        footer * {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        footer img {
+            display: block !important;
+            max-width: 100% !important;
+            height: auto !important;
+        }
+        footer p {
+            line-height: 1 !important;
+            line-height: 1.5 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .container {
+            max-width: none !important;
+        }
+        .header-logo {
+            border: 3px solid #020920; /* Navy blue border */
+        }
+        .footer-content-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{% url 'home' %}" class="text-xl font-bold">
+                <img src="{% static 'images/assesseez_logo.png' %}" alt="AssessEEZ Logo" class="h-14 w-14 header-logo object-contain">
+            </a>
+            <div class="flex items-center space-x-4">
+                {% if request.user.is_authenticated %}
+                    <span>Welcome, {{ full_name|default:request.user.email }}</span>
+                    <a href="{% url 'qualifications:inbox' %}" class="relative">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        {% if unread_count > 0 %}
+                            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-medium px-2 py-0.5 rounded-full">{{ unread_count }}</span>
+                        {% endif %}
+                    </a>
+                    {% block nav_items %}
+                    {% endblock %}
+                    <form method="post" action="{% url 'users:custom_logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white">Logout</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <div class="mt-4">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer class="bg-blue-400 text-gray-800 py-4 px-6 mt-auto relative">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex-1"></div> <!-- Spacer to push content to center -->
+            <div class="footer-content-center flex flex-col items-center space-y-2">
+                <div class="text-sm">
+                    <a href="{% url 'privacy_policy' %}" class="underline hover:text-gray-600 font-medium">Privacy Policy</a> | 
+                    <a href="{% url 'user_agreement' %}" class="underline hover:text-gray-600 font-medium">User Agreement</a>
+                </div>
+                <p class="text-xs text-center">© {% now "Y" %} Paradigm Qualifications Ltd. All rights reserved. Company number 14078939 Registered in England and Wales</p>
+            </div>
+            <div class="flex-1 flex justify-end">
+                <img src="{% if business and business.logo and business.logo.url %}{{ business.logo.url }}{% else %}{% static 'images/assesseez_logo.png' %}{% endif %}" 
+                     alt="{% if business and business.name %}{{ business.name }}{% else %}AssessEEZ{% endif %} Logo" 
+                     class="h-14 w-14 header-logo object-contain" style="margin-left: 10px; margin-right: 10px;">
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

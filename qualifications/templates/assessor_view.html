@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Assessor View - {{ qualification.qualification_title }}{% endblock %}
+
+{% block nav_title %}Assessor View{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'qualifications:assessor_resources' qualification.id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Qualification Resources</a>
+    <a href="{% url 'qualifications:user_dashboard' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Dashboard</a>
+{% endblock %}
+
+{% block content %}
+    <!-- Main Content -->
+    <div class="container mx-auto mt-8 px-4">
+        <!-- Qualification Title -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ qualification.qualification_title }}</h2>
+            <p class="text-gray-600 mb-2"><strong>Institute:</strong> {{ business.name }} (ID: {{ business.business_id }})</p>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Learners with <100% Progress -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Assigned Learners</h3>
+            {% if active_learners %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border">
+                        <thead>
+                            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                                <th class="py-3 px-6 text-left">Learner Name</th>
+                                <th class="py-3 px-6 text-left">Progress</th>
+                                <th class="py-3 px-6 text-left">Pending Assessment</th>
+                                <th class="py-3 px-6 text-left">IQA Name</th>
+                                <th class="py-3 px-6 text-left">IQA Sampling Ratio (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600 text-sm">
+                            {% for learner in active_learners %}
+                                <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                    <td class="py-3 px-6">
+                                        <a href="{% url 'qualifications:assessor_feedback' qualification.id learner.learner_id %}" class="text-blue-600 hover:underline">{{ learner.name }}</a>
+                                    </td>
+                                    <td class="py-3 px-6">
+                                        <div class="w-full bg-gray-200 rounded-full h-4">
+                                            <div class="bg-blue-600 h-4 rounded-full" style="width: {{ learner.progress|floatformat:2 }}%"></div>
+                                        </div>
+                                        <span>{{ learner.progress|floatformat:2 }}%</span>
+                                    </td>
+                                    <td class="py-3 px-6">
+                                        {{ learner.pending_assessment }}
+                                    </td>
+                                    <td class="py-3 px-6">
+                                        {{ learner.iqa_name|default:"No IQA" }}
+                                    </td>
+                                    <td class="py-3 px-6">
+                                        <div class="flex items-center">
+                                            <div class="w-32 bg-gray-200 rounded-full h-2.5 mr-2">
+                                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ learner.sampling_ratio }}%;"></div>
+                                            </div>
+                                            <span>{{ learner.sampling_ratio }}%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-500">No learners assigned or all learners have completed the qualification.</p>
+            {% endif %}
+        </div>
+
+        <!-- Previous Records Button -->
+        <div class="text-center mb-8">
+            <button id="toggle-previous-records" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Previous Records
+            </button>
+        </div>
+
+        <!-- Completed Learners (Hidden by Default) -->
+        <div id="previous-records" class="bg-white p-6 rounded-lg shadow-md mb-8 hidden">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Completed Learners (100% Progress)</h3>
+            {% if completed_learners %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border">
+                        <thead>
+                            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                                <th class="py-3 px-6 text-left">Learner Name</th>
+                                <th class="py-3 px-6 text-left">Progress</th>
+                                <th class="py-3 px-6 text-left">Pending Assessment</th>
+                                <th class="py-3 px-6 text-left">IQA Name</th>
+                                <th class="py-3 px-6 text-left">IQA Sampling Ratio (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600 text-sm">
+                            {% for learner in completed_learners %}
+                                <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                    <td class="py-3 px-6">
+                                        <a href="{% url 'qualifications:assessor_feedback' qualification.id learner.learner_id %}" class="text-blue-600 hover:underline">{{ learner.name }}</a>
+                                    </td>
+                                    <td class="py-3 px-6">
+                                        <div class="w-full bg-gray-200 rounded-full h-4">
+                                            <div class="bg-blue-600 h-4 rounded-full" style="width: 100%"></div>
+                                        </div>
+                                        <span>100%</span>
+                                    </td>
+                                    <td class="py-3 px-6">
+                                        {{ learner.pending_assessment }}
+                                    </td>
+                                    <td class="py-3 px-6">
+                                        {{ learner.iqa_name|default:"No IQA" }}
+                                    </td>
+                                    <td class="py-3 px-6">
+                                        <div class="flex items-center">
+                                            <div class="w-32 bg-gray-200 rounded-full h-2.5 mr-2">
+                                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ learner.sampling_ratio }}%;"></div>
+                                            </div>
+                                            <span>{{ learner.sampling_ratio }}%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-500">No learners have completed the qualification.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.getElementById('toggle-previous-records').addEventListener('click', function() {
+            const previousRecords = document.getElementById('previous-records');
+            if (previousRecords.classList.contains('hidden')) {
+                previousRecords.classList.remove('hidden');
+                this.textContent = 'Hide Previous Records';
+            } else {
+                previousRecords.classList.add('hidden');
+                this.textContent = 'Previous Records';
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}IQA Feedback - {{ unit.unit_title }}{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'qualifications:iqa_feedback_history_view' qualification.id learner.id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to IQA Feedback History</a>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Provide IQA Feedback for {{ unit.unit_title }}</h2>
+        <p class="text-gray-600 mb-2"><strong>Qualification:</strong> {{ qualification.qualification_title }}</p>
+        <p class="text-gray-600 mb-2"><strong>Learner:</strong> {{ learner_name }}</p>
+        <p class="text-gray-600 mb-2"><strong>Institute:</strong> {{ business.name }} (ID: {{ business.business_id }})</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Feedback Form -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Feedback Form</h3>
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="{{ form.sampling_type.id_for_label }}" class="block text-sm font-medium text-gray-700">Sampling Type</label>
+                {{ form.sampling_type }}
+                {% if form.sampling_type.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.sampling_type.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="{{ form.outcome.id_for_label }}" class="block text-sm font-medium text-gray-700">Outcome</label>
+                {{ form.outcome }}
+                {% if form.outcome.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.outcome.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+            <div>
+                <label for="{{ form.comments.id_for_label }}" class="block text-sm font-medium text-gray-700">Comments</label>
+                {{ form.comments }}
+                {% if form.comments.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.comments.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+            <div class="flex justify-end space-x-4">
+                <a href="{% url 'qualifications:iqa_feedback_history_view' qualification.id learner.id %}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Cancel</a>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit Feedback</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Feedback History for {{ learning_outcome.lo_detail }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Feedback History for {{ learning_outcome.lo_detail }}</h2>
+        <p class="text-gray-600 mb-2"><strong>Qualification:</strong> {{ qualification.qualification_title }}</p>
+        <p class="text-gray-600 mb-2"><strong>Learner:</strong> {{ learner.user.user.full_name|default:learner.user.user.email }}{% if learner.disability %} (Reasonable Adjustments Required){% endif %}</p>
+        <p class="text-gray-600 mb-2"><strong>Institute:</strong> {{ business.name }} (ID: {{ business.business_id }})</p>
+    </div>
+
+    <!-- Feedback History -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Feedback Entries</h3>
+        {% if feedback_data %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Feedback</th>
+                        <th class="py-3 px-6 text-left">Date Provided</th>
+                        <th class="py-3 px-6 text-left">Assessor</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm">
+                    {% for feedback in feedback_data %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6">{{ feedback.detail|default:"No feedback provided" }}</td>
+                        <td class="py-3 px-6">{{ feedback.created_at|date:"Y-m-d H:i" }}</td>
+                        <td class="py-3 px-6">{{ feedback.assessor_name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-gray-500">No feedback provided for this learning outcome.</p>
+        {% endif %}
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-8">
+        {% if is_assessor %}
+        <a href="{% url 'qualifications:assessor_feedback' qualification.id learner.id %}" class="inline-flex justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">Back to Assessor Feedback</a>
+        {% else %}
+        <button onclick="history.back()" class="inline-flex justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">Back</button>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

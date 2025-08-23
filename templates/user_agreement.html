@@ -1,0 +1,334 @@
+{% extends 'base1.html' %}
+{% load static %}
+
+{% block title %}User Agreement - AssessEEZ{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-12 max-w-5xl">
+    <!-- Header Section with enhanced styling -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4 tracking-tight leading-tight">User Agreement</h1>
+        <div class="w-24 h-1 bg-blue-500 mx-auto rounded-full mb-4"></div>
+        <p class="text-base text-gray-600 font-medium">Last updated: June 8, 2025</p>
+    </div>
+
+    <!-- Content Sections with improved typography and spacing -->
+    <div class="space-y-8">
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">1</span>
+                Acceptance of Terms
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                This User Agreement ("Agreement") governs your use of AssessEEZ, operated by Paradigm Qualifications Ltd. ("we," "us," or "our"), a company registered in England and Wales (Company number 14078939). By accessing or using our platform, you agree to be bound by this Agreement. If you do not agree, you must not use our services.
+            </p>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">2</span>
+                Services and Pricing
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg mb-4">
+                AssessEEZ provides an online platform for educational assessment and qualification management. Pricing details are available on our <a href="{% url 'pricing' %}" class="underline text-blue-500 hover:text-blue-700 transition-colors duration-200 font-medium">Pricing page</a>. We offer one-off fee packages and monthly subscription plans, subject to the following:
+            </p>
+            <ul class="list-none space-y-3 mb-4">
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed"><strong class="font-semibold">Fair Usage Policy:</strong> Each learner is allocated an average of 5GB of data storage. For one-off fee packages, storage is provided for a maximum of 3 years. For monthly fee packages, storage is provided for the duration of the active subscription.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed"><strong class="font-semibold">Assessors, IQAs, and EQAs:</strong> Assessors, Internal Quality Assurers (IQAs), and External Quality Assurers (EQAs) can be added at no additional cost, provided they maintain a 1:20 ratio against learners (i.e., one assessor, IQA, and EQA per 20 learners).</span>
+                </li>
+            </ul>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                Pricing and package details may change. Current subscribers will be notified of changes in accordance with applicable law.
+            </p>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">3</span>
+                User Responsibilities
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg mb-4">You agree to:</p>
+            <ul class="list-none space-y-3">
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Provide accurate and complete information during registration and use.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Maintain the confidentiality of your account credentials.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Use the platform in compliance with applicable laws and regulations.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Not misuse the platform, including uploading malicious code or engaging in unauthorized access.</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">4</span>
+                Data Protection and Security
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg mb-4">
+                We implement industry-standard security measures to protect your data, including encryption and access controls. However, data protection is not absolutely guaranteed. In the unlikely event of a data breach or loss, our liability is limited as follows:
+            </p>
+            <ul class="list-none space-y-3 mb-4">
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Paradigm Qualifications Ltd. will only be liable for the total payments made by you in the preceding 3 months, or £100 if no payments have been made.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">We are not liable for indirect, consequential, or incidental damages arising from data loss or breaches.</span>
+                </li>
+            </ul>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                You are responsible for maintaining backups of your data and ensuring the security of your devices and networks.
+            </p>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">5</span>
+                Intellectual Property
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                All content, software, and materials on AssessEEZ are owned by or licensed to Paradigm Qualifications Ltd. You are granted a limited, non-exclusive license to use the platform for its intended purpose. You may not copy, modify, distribute, or reverse-engineer any part of the platform.
+            </p>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">6</span>
+                Limitation of Liability
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg mb-4">
+                To the fullest extent permitted by law, Paradigm Qualifications Ltd. and its affiliates, officers, directors, and employees shall not be liable for:
+            </p>
+            <ul class="list-none space-y-3 mb-4">
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Any indirect, incidental, special, consequential, or punitive damages.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Loss of profits, data, use, goodwill, or other intangible losses.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Any damages arising from your use of or inability to use the platform.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Unauthorized access to or alteration of your data.</span>
+                </li>
+            </ul>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                Our total liability for any claim arising from this Agreement or your use of AssessEEZ shall not exceed the amount paid by you in the preceding 3 months, or £100 if no payments have been made.
+            </p>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">7</span>
+                Indemnification
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg mb-4">
+                You agree to indemnify and hold harmless Paradigm Qualifications Ltd., its affiliates, officers, directors, and employees from any claims, damages, or expenses (including legal fees) arising from:
+            </p>
+            <ul class="list-none space-y-3">
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Your use of the platform.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Your violation of this Agreement.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Your infringement of any third-party rights.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Any data or content you upload to the platform.</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">8</span>
+                Termination
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg mb-4">
+                We may suspend or terminate your access to AssessEEZ at our discretion, with or without notice, for reasons including but not limited to:
+            </p>
+            <ul class="list-none space-y-3 mb-4">
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Violation of this Agreement.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Non-payment of fees.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Suspected fraudulent or illegal activity.</span>
+                </li>
+            </ul>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                Upon termination, your right to access the platform ceases, and we may delete your data in accordance with our data retention policy.
+            </p>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">9</span>
+                Governing Law and Dispute Resolution
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg mb-4">
+                This Agreement is governed by the laws of England and Wales. Any disputes arising from this Agreement shall be resolved through:
+            </p>
+            <ul class="list-none space-y-3 mb-4">
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">Negotiation in good faith.</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-500 mr-3 mt-1">•</span>
+                    <span class="text-gray-700 leading-relaxed">If unresolved, exclusive jurisdiction of the courts of England and Wales.</span>
+                </li>
+            </ul>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                You waive any right to a jury trial and agree not to bring claims as part of a class action.
+            </p>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">10</span>
+                Force Majeure
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                We are not liable for any failure to perform our obligations due to events beyond our reasonable control, including but not limited to natural disasters, cyberattacks, or governmental actions.
+            </p>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">11</span>
+                Changes to This Agreement
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                We may update this Agreement from time to time. Changes will be posted on this page with an updated "Last updated" date. Continued use of the platform constitutes acceptance of the updated Agreement.
+            </p>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">12</span>
+                Miscellaneous
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                This Agreement constitutes the entire agreement between you and Paradigm Qualifications Ltd. regarding your use of AssessEEZ. If any provision is found unenforceable, the remaining provisions remain in effect. Our failure to enforce any right does not constitute a waiver of that right.
+            </p>
+        </section>
+
+        <section class="bg-white rounded-lg p-8 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">13</span>
+                Contact Us
+            </h2>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                For questions or concerns about this Agreement, contact us at:
+                <br><strong class="font-semibold">Paradigm Qualifications Ltd.</strong><br>Email: <a href="mailto:support@assesseez.com" class="underline text-blue-500 hover:text-blue-700 transition-colors duration-200 font-medium">support@assesseez.co.uk</a><br>Address: Office 333, Davidson House, The Forbury, Reading RG1 3EU United Kingdom.
+            </p>
+        </section>
+    </div>
+
+    <!-- Footer section with enhanced styling -->
+    <div class="mt-12 pt-8 border-t border-gray-200 text-center">
+        <p class="text-gray-600 text-sm">By using AssessEEZ, you acknowledge that you have read, understood, and agree to be bound by this User Agreement.</p>
+    </div>
+</div>
+
+<style>
+    /* Custom scrollbar for better readability */
+    .container::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .container::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+    
+    .container::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    
+    .container::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    
+    /* Smooth animations for better user experience */
+    .container > * {
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    
+    .container > *:nth-child(1) { animation-delay: 0.1s; }
+    .container > *:nth-child(2) { animation-delay: 0.2s; }
+    .container > *:nth-child(3) { animation-delay: 0.3s; }
+    .container > *:nth-child(4) { animation-delay: 0.4s; }
+    .container > *:nth-child(5) { animation-delay: 0.5s; }
+    .container > *:nth-child(6) { animation-delay: 0.6s; }
+    .container > *:nth-child(7) { animation-delay: 0.7s; }
+    .container > *:nth-child(8) { animation-delay: 0.8s; }
+    .container > *:nth-child(9) { animation-delay: 0.9s; }
+    .container > *:nth-child(10) { animation-delay: 1.0s; }
+    .container > *:nth-child(11) { animation-delay: 1.1s; }
+    .container > *:nth-child(12) { animation-delay: 1.2s; }
+    .container > *:nth-child(13) { animation-delay: 1.3s; }
+    .container > *:nth-child(14) { animation-delay: 1.4s; }
+    .container > *:nth-child(15) { animation-delay: 1.5s; }
+    
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Enhanced focus states for accessibility */
+    a:focus {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+    
+    /* Improved hover effects */
+    section:hover {
+        border-color: #dbeafe;
+    }
+    
+    /* Better text selection */
+    ::selection {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+</style>
+{% endblock %}

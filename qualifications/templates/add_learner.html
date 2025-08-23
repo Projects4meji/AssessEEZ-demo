@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Learner{% endblock %}
+
+{% block content %}
+<link rel="icon" type="image/png" href="{% static 'favicon-32x32.png' %}" sizes="32x32">
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- CSRF token script -->
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<!-- Main Content -->
+<div class="container mx-auto mt-8 px-4">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-3xl font-semibold text-gray-800 mb-6 text-center">Add a New Learner</h2>
+
+        <!-- Display messages -->
+        {% if messages %}
+            <div class="mb-6">
+                {% for message in messages %}
+                    <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700{% else %}bg-red-100 text-red-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Form -->
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Email -->
+            <div>
+                <label for="{{ form.email.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.email.label }}</label>
+                <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" value="{{ form.email.value|default_if_none:'' }}" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3" required>
+                {% if form.email.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.email.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Full Name -->
+            <div>
+                <label for="{{ form.full_name.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.full_name.label }}</label>
+                <input type="text" name="{{ form.full_name.name }}" id="{{ form.full_name.id_for_label }}" value="{{ form.full_name.value|default_if_none:'' }}" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3" required>
+                {% if form.full_name.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.full_name.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Qualification -->
+            <div>
+                <label for="{{ form.qualification.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.qualification.label }}</label>
+                <select name="{{ form.qualification.name }}" id="{{ form.qualification.id_for_label }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3" required>
+                    <option value="">{{ form.qualification.field.empty_label }}</option>
+                    {% for qual in form.qualification.field.queryset %}
+                        <option value="{{ qual.id }}" {% if form.qualification.value == qual.id %}selected{% endif %}>{{ qual }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.qualification.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.qualification.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Assessor -->
+            <div>
+                <label for="{{ form.assessor.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.assessor.label }}</label>
+                <select name="{{ form.assessor.name }}" id="{{ form.assessor.id_for_label }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3" required>
+                    <option value="">{{ form.assessor.field.empty_label }}</option>
+                    {% for assessor in form.assessor.field.queryset %}
+                        <option value="{{ assessor.id }}" {% if form.assessor.value == assessor.id %}selected{% endif %}>{{ assessor }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.assessor.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.assessor.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- IQA -->
+            <div>
+                <label for="{{ form.iqa.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.iqa.label }}</label>
+                <select name="{{ form.iqa.name }}" id="{{ form.iqa.id_for_label }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3" required>
+                    <option value="">{{ form.iqa.field.empty_label }}</option>
+                    {% for iqa in form.iqa.field.queryset %}
+                        <option value="{{ iqa.id }}" {% if form.iqa.value == iqa.id %}selected{% endif %}>{{ iqa }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.iqa.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.iqa.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Date of Birth -->
+            <div>
+                <label for="{{ form.dob.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.dob.label }}</label>
+                <input type="date" name="{{ form.dob.name }}" id="{{ form.dob.id_for_label }}" value="{{ form.dob.value|default_if_none:'' }}" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3" required>
+                {% if form.dob.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.dob.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Batch # -->
+            <div>
+                <label for="{{ form.batch_number.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.batch_number.label }}</label>
+                <input type="text" name="{{ form.batch_number.name }}" id="{{ form.batch_number.id_for_label }}" value="{{ form.batch_number.value|default_if_none:'' }}" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3">
+                {% if form.batch_number.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.batch_number.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Disability -->
+            <div>
+                <label for="{{ form.disability.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.disability.label }}</label>
+                <input type="checkbox" name="{{ form.disability.name }}" id="{{ form.disability.id_for_label }}" {% if form.disability.value %}checked{% endif %} class="mt-1 h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                {% if form.disability.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.disability.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Address -->
+            <div>
+                <label for="{{ form.address.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.address.label }}</label>
+                <textarea name="{{ form.address.name }}" id="{{ form.address.id_for_label }}" rows="3" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3">{{ form.address.value|default_if_none:'' }}</textarea>
+                {% if form.address.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.address.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Phone Number -->
+            <div>
+                <label for="{{ form.phone_number.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.phone_number.label }}</label>
+                <input type="tel" name="{{ form.phone_number.name }}" id="{{ form.phone_number.id_for_label }}" value="{{ form.phone_number.value|default_if_none:'' }}" placeholder="+1234567890" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3">
+                {% if form.phone_number.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.phone_number.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Date of Registration -->
+            <div>
+                <label for="{{ form.date_of_registration.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.date_of_registration.label }}</label>
+                <input type="date" name="{{ form.date_of_registration.name }}" id="{{ form.date_of_registration.id_for_label }}" value="{{ form.date_of_registration.value|date:'Y-m-d' }}" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3" required>
+                {% if form.date_of_registration.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.date_of_registration.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Country -->
+            <div>
+                <label for="{{ form.country.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.country.label }}</label>
+                <select name="{{ form.country.name }}" id="{{ form.country.id_for_label }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-base py-2 px-3">
+                    <option value="">{{ form.country.field.choices.0.1 }}</option>
+                    {% for code, name in form.country.field.choices %}
+                        {% if code %}
+                            <option value="{{ code }}" {% if form.country.value == code %}selected{% endif %}>{{ name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                {% if form.country.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.country.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Ethnicity -->
+            <div>
+                <label for="{{ form.ethnicity.id_for_label }}" class="block text-base font-medium text-gray-700">{{ form.ethnicity.label }}</label>
+                <select name="{{ form.ethnicity.name }}" id="{{ form.ethnicity.id_for_label }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-base py-2 px-3">
+                    <option value="">Select an ethnicity</option>
+                    {% for code, name in form.ethnicity.field.choices %}
+                        <option value="{{ code }}" {% if form.ethnicity.value == code %}selected{% endif %}>{{ name }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.ethnicity.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.ethnicity.errors|join:", " }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="inline-flex justify-center py-2 px-6 text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Add Learner
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- JavaScript for dynamic assessor and IQA population -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const qualificationSelect = document.getElementById('{{ form.qualification.id_for_label }}');
+        const assessorSelect = document.getElementById('{{ form.assessor.id_for_label }}');
+        const iqaSelect = document.getElementById('{{ form.iqa.id_for_label }}');
+
+        qualificationSelect.addEventListener('change', function () {
+            const qualId = this.value;
+            if (qualId) {
+                // Fetch assessors
+                fetch('/qualifications/get_assessors/?qualification=' + qualId, {
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    assessorSelect.innerHTML = '<option value="">{{ form.assessor.field.empty_label }}</option>';
+                    data.assessors.forEach(assessor => {
+                        const option = document.createElement('option');
+                        option.value = assessor.id;
+                        option.text = assessor.name;
+                        assessorSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching assessors:', error));
+
+                // Fetch IQAs
+                fetch('/qualifications/get_iqas/?qualification=' + qualId, {
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    iqaSelect.innerHTML = '<option value="">{{ form.iqa.field.empty_label }}</option>';
+                    data.iqas.forEach(iqa => {
+                        const option = document.createElement('option');
+                        option.value = iqa.id;
+                        option.text = iqa.name;
+                        iqaSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching IQAs:', error));
+            } else {
+                assessorSelect.innerHTML = '<option value="">{{ form.assessor.field.empty_label }}</option>';
+                iqaSelect.innerHTML = '<option value="">{{ form.iqa.field.empty_label }}</option>';
+            }
+        });
+
+        // Trigger change event on page load to populate assessor/IQA if qualification is pre-selected
+        if (qualificationSelect.value) {
+            qualificationSelect.dispatchEvent(new Event('change'));
+        }
+    });
+</script>
+{% endblock %}

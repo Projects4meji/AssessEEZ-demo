@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Documents Check - {{ qualification.qualification_title }}{% endblock %}
+
+{% block nav_title %}Documents Check{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'qualifications:assessor_feedback' qualification.id learner.id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Assessor Feedback</a>
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto mt-8 px-4">
+        <!-- Qualification and Learner Details -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ qualification.qualification_title }}</h2>
+            <p class="text-gray-600 mb-2"><strong>Learner:</strong> {{ learner_name }}</p>
+            <p class="text-gray-600 mb-2"><strong>Institute:</strong> {{ business.name }} (ID: {{ business.business_id }})</p>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Document Requirements -->
+        {% if submission_data %}
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Mandatory Document Requirements</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border">
+                        <thead>
+                            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                                <th class="py-3 px-6 text-left">Document Title</th>
+                                <th class="py-3 px-6 text-left">Description</th>
+                                <th class="py-3 px-6 text-left">Template</th>
+                                <th class="py-3 px-6 text-left">Uploaded Document</th>
+                                <th class="py-3 px-6 text-left">Status</th>
+                                <th class="py-3 px-6 text-left">Accept/Reject</th>
+                                <th class="py-3 px-6 text-left">IQA Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600 text-sm">
+                            {% for doc in submission_data %}
+                                <tr class="border-b border-gray-200 hover:bg-gray-100 {% if doc.remark == 'NON_CONFORMANCE' %}bg-red-100{% elif doc.status == 'ACCEPTED' %}bg-green-100{% elif doc.status == 'REJECTED' %}bg-red-100{% elif doc.status == 'PENDING' %}bg-yellow-100{% endif %}">
+                                    <td class="py-3 px-6">{{ doc.title }}</td>
+                                    <td class="py-3 px-6">{{ doc.description|truncatewords:20 }}</td>
+                                    <td class="py-3 px-6">
+                                        {% if doc.template %}
+                                            <a href="{{ doc.template.url }}" target="_blank" class="text-blue-500 hover:underline">Download Template</a>
+                                        {% else %}
+                                            No Template
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-6">
+                                        {% if doc.document_file %}
+                                            <a href="{{ doc.document_file.url }}" target="_blank" class="text-blue-500 hover:underline">View Document</a>
+                                        {% else %}
+                                            No Document
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-6">{{ doc.status }}</td>
+                                    <td class="py-3 px-6">
+                                        {% if doc.form %}
+                                            <form method="post" class="inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="submission_id" value="{{ doc.id }}">
+                                                {{ doc.form.as_p }}
+                                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2">Update Status</button>
+                                            </form>
+                                            {% if doc.comments %}
+                                                <p class="text-sm text-gray-500 mt-2">Comments: {{ doc.comments }}</p>
+                                            {% endif %}
+                                        {% else %}
+                                            <p class="text-gray-500">Awaiting Submission</p>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-6">
+                                        {% if doc.remark %}
+                                            {{ doc.remark }}{% if doc.remark_comments %}, Comments: {{ doc.remark_comments }}{% endif %}
+                                        {% else %}
+                                            None
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% else %}
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <p class="text-gray-600">No mandatory document requirements for this qualification.</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

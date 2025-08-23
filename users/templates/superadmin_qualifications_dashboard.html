@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Qualifications Dashboard - AssessEEZ{% endblock %}
+
+{% block content %}
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">AssessEEZ - Superadmin Qualifications Dashboard</h1>
+            <div class="flex items-center space-x-4">
+                <span>Welcome, {{ request.user.email }}</span>
+                <form method="post" action="{% url 'users:custom_logout' %}" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white">Logout</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto mt-8 px-4 flex-grow">
+        <!-- Messages -->
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Search Form -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Search Qualifications</h2>
+            <form method="get" class="flex space-x-2">
+                {{ form.query }}
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Search</button>
+            </form>
+        </div>
+
+        <!-- Qualifications List -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Current Qualifications</h2>
+            {% if qualifications %}
+                <div class="grid grid-cols-1 gap-6">
+                    {% for qual in qualifications %}
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                            <h3 class="text-xl font-semibold mb-2 text-gray-800">{{ qual.qualification_title }}</h3>
+                            <p class="text-gray-600">Qualification Number: {{ qual.qualification_number }}</p>
+                            <p class="text-gray-600">Awarding Body: {{ qual.awarding_body }}</p>
+                            <p class="text-gray-600">Business: {{ qual.business.business_id }} - {{ qual.business.name }}</p>
+                            <a href="{% url 'users:assign_qualification' qual.id %}" class="mt-4 inline-block bg-yellow-400 text-gray-800 px-4 py-2 rounded hover:bg-yellow-600 transition-colors">
+                                Assign this Qualification
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-500">No qualifications found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center p-4">
+        <p>© {% now "Y" %} AssessEEZ. All rights reserved.</p>
+    </footer>
+</body>
+{% endblock %}

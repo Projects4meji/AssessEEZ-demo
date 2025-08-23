@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="{% static 'favicon-32x32.png' %}" sizes="32x32">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AssessEEZ</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style.css' %}" type="text/css">
+    <style>
+        .header-logo {
+            border: 3px solid #fbbf24;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.2);
+        }
+        
+        .header-logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
+        }
+        
+        .nav-container {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 50%, #1e293b 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding-left: 30px;
+            padding-right: 40px;
+        }
+        
+        .nav-logo {
+            flex: 0 0 auto;
+        }
+        
+        .nav-text {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        
+        nav {
+            position: relative;
+        }
+        
+        /* Enhanced form styling */
+        .form-input {
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        .login-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .login-btn:hover::before {
+            left: 100%;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+        }
+        
+        .toggle-password {
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-password:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Enhanced footer */
+        .footer {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+    <!-- Enhanced Navigation -->
+    <nav class="nav-container text-white p-4 shadow-lg">
+        <div class="nav-logo">
+            <a href="{% url 'home' %}" class="text-xl font-bold group">
+                <img src="{% static 'images/assesseez_logo.png' %}" alt="AssessEEZ Logo" class="h-14 header-logo object-contain">
+            </a>
+        </div>
+        <div class="nav-text">
+            <h1 class="text-xl font-bold text-blue-100 group-hover:text-yellow-300 transition-colors duration-300">AssessEEZ</h1>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-grow flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-md mx-auto border border-gray-200">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-6 text-center">Login to AssessEEZ</h2>
+
+            <!-- Messages/Errors -->
+            {% if messages %}
+                <div class="mb-6 space-y-2">
+                    {% for message in messages %}
+                        <div class="p-4 rounded-lg border {% if message.tags == 'success' %}bg-green-100 text-green-700 border-green-400{% else %}bg-red-100 text-red-700 border-red-400{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if form.errors %}
+                <div class="bg-red-100 text-red-700 p-4 rounded-lg border border-red-400 mb-6">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Login Form -->
+            <form method="post" action="{% url 'login' %}" class="space-y-6">
+                {% csrf_token %}
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-base font-medium text-gray-900 mb-1">{{ form.email.label }}</label>
+                    <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" value="{{ form.email.value|default_if_none:'' }}" class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600 text-base px-4 py-2" required>
+                    {% if form.email.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.email.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+                <div class="relative">
+                    <label for="{{ form.password.id_for_label }}" class="block text-base font-medium text-gray-900 mb-1">{{ form.password.label }}</label>
+                    <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}" class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600 text-base px-4 py-2 pr-10" required>
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 top-7">
+                        <button type="button" class="toggle-password text-gray-500 hover:text-gray-700" onclick="togglePassword('{{ form.password.id_for_label }}')">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </span>
+                    {% if form.password.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.password.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Login</button>
+            </form>
+            <p class="mt-4 text-center">
+                <a href="{% url 'users:forgot_password' %}" class="text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-300">Forgot your password?</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Enhanced Footer -->
+    <footer class="footer text-white text-center p-6 mt-8">
+        <div class="container mx-auto">
+            <p class="text-sm">© {% now "Y" %} Paradigm Qualifications Ltd. All rights reserved. Company number 14078939 Registered in England and Wales</p>
+        </div>
+    </footer>
+
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.querySelector(`#${inputId} + span svg`);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>';
+            } else {
+                input.type = "password";
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
+            }
+        }
+    </script>
+</body>
+</html>

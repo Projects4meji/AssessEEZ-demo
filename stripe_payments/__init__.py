@@ -1,0 +1,2 @@
+# Stripe Payments Django App
+

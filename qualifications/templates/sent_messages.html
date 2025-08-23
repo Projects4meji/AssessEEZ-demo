@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static qualifications_filters %}
+
+{% block title %}Sent Messages{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'qualifications:inbox' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Messages</a>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6 max-w-7xl">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Sent Messages</h2>
+        <div class="mb-4 flex justify-start space-x-4">
+            <a href="{% url 'qualifications:inbox' %}" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                View Inbox
+            </a>
+            <a href="{% url 'qualifications:compose_message' %}" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Compose Message
+            </a>
+        </div>
+        <div class="mb-4">
+            <input type="text" id="searchInput" placeholder="Search by subject or recipient..." aria-label="Search messages" class="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" oninput="filterMessages()">
+        </div>
+        {% if messages %}
+        <div class="mb-6 space-y-2">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% if threads %}
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse border border-gray-200 rounded-lg" id="messageTable">
+                <thead class="bg-gray-100 text-gray-700 text-sm font-semibold uppercase">
+                    <tr>
+                        <th class="border border-gray-200 p-3 text-left">Subject</th>
+                        <th class="border border-gray-200 p-3 text-left">Recipients</th>
+                        <th class="border border-gray-200 p-3 text-left">Date</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm">
+                    {% for subject, thread in threads.items %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="border border-gray-200 p-3">
+                            <a href="{% url 'qualifications:message_thread' thread_id=thread.latest_message.id %}" class="text-blue-600 hover:text-blue-800">{{ subject }}</a>
+
+
+
+                        </td>
+                        <td class="border border-gray-200 p-3">
+                            To: {% for recipient in thread.latest_message.recipients.all %}{{ recipient.recipient.user.full_name|default:recipient.recipient.user.email }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                        </td>
+                        <td class="border border-gray-200 p-3">{{ thread.latest_message.sent_at|date:"Y-m-d H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-gray-600 text-center mt-4">No messages sent.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function filterMessages() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#messageTable tbody tr');
+
+    rows.forEach(row => {
+        const subject = row.cells[0].textContent.toLowerCase();
+        const recipients = row.cells[1].textContent.toLowerCase();
+        
+        if (subject.includes(searchInput) || recipients.includes(searchInput)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

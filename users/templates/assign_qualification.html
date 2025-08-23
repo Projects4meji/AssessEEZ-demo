@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Assign Qualification - AssessEEZ{% endblock %}
+
+{% block nav_items %}
+    <form method="post" action="{% url 'users:custom_logout' %}" class="inline">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white">Logout</button>
+    </form>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-8 px-4 flex-grow">
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Assignment Form -->
+    <div class="bg-white p-6 rounded-lg shadow-md max-w-lg mx-auto">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Assign Qualification: {{ qualification.qualification_title }}</h2>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block text-gray-800 font-semibold mb-2 text-sm">Select Businesses</label>
+                {{ form.businesses }}
+            </div>
+            <button type="submit" class="bg-yellow-400 text-gray-800 px-4 py-2 rounded hover:bg-yellow-500 font-bold text-sm">
+                Assign Qualification
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<footer class="bg-gray-800 text-white text-center p-4">
+    <p>© {% now "Y" %} AssessEEZ. All rights reserved.</p>
+</footer>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Superadmin - AssessEEZ{% endblock %}
+
+{% block nav_items %}
+    
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-8 px-4 flex-grow">
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Business List -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Current Businesses</h2>
+        {% if businesses_with_admin %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Business ID</th>
+                        <th class="py-3 px-6 text-left">Business Name</th>
+                        <th class="py-3 px-6 text-left">Admin Name</th>
+                        <th class="py-3 px-6 text-left">Admin Email</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm">
+                    {% for entry in businesses_with_admin %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer" onclick="window.location='{% url 'users:business_details' entry.business.business_id %}'">
+                        <td class="py-3 px-6">{{ entry.business.business_id }}</td>
+                        <td class="py-3 px-6">{{ entry.business.name }}</td>
+                        <td class="py-3 px-6">{{ entry.admin_name }}</td>
+                        <td class="py-3 px-6">{{ entry.admin_email }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="py-3 px-6 text-center text-gray-500">No businesses found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-gray-500">No businesses yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Buttons -->
+    <div class="text-center mb-8 flex justify-center space-x-4">
+        <a href="{% url 'users:create_admin' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Create Admin</a>
+        <a href="{% url 'users:superadmin_qualifications_dashboard' %}" class="bg-yellow-400 text-gray-800 font-bold py-2 px-4 rounded hover:bg-yellow-500">Qualifications List</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Optional: Add confirmation for logout (handled inline in form onsubmit)
+</script>
+{% endblock %}

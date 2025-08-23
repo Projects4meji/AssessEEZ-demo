@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="{% static 'favicon-32x32.png' %}" sizes="32x32">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssessEEZ {{ submission_type }} Submission Notification</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: #f3f4f6; color: #1f2937;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f3f4f6; padding: 40px 0;" cellpadding="0" cellspacing="0">
+        <tr>
+            <td style="text-align: center;">
+                <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="background-color: #2563eb; padding: 20px; text-align: center;">
+                            <h1 style="color: #ffffff; font-size: 24px; margin: 0;">AssessEEZ {{ submission_type }} Submission Notification</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 24px;">
+                            <p style="font-size: 16px; line-height: 24px; color: #1f2937; margin: 0 0 16px;">
+                                Dear {{ assessor_name }},
+                            </p>
+                            <p style="font-size: 16px; line-height: 24px; color: #1f2937; margin: 0 0 16px;">
+                                {{ learner_name }} has uploaded the {{ submission_type }} for <strong>{{ qualification_title }}</strong> at <strong>{{ business_name }} (ID: {{ business_id }})</strong>.
+                            </p>
+                            <p style="font-size: 16px; line-height: 24px; color: #1f2937; margin: 16px 0;">
+                                You can login at <a href="{{ login_url }}" style="color: #4f46e5; text-decoration: underline;">here</a> to access the new uploaded documents.
+                            </p>
+                            {% if logo_available %}
+                                <p style="text-align: center; margin: 16px 0;">
+                                    <img src="cid:assesseez_logo" alt="AssessEEZ Logo" style="max-width: 150px; height: auto;">
+                                </p>
+                            {% else %}
+                                <p style="text-align: center; font-size: 16px; color: #1f2937; margin: 16px 0;">AssessEEZ Logo</p>
+                            {% endif %}
+                            <p style="font-size: 16px; line-height: 24px; color: #1f2937; margin: 16px 0;">
+                                If you have any questions, please contact the admin of {{ business_name }} at <a href="mailto:{{ admin_email }}" style="color: #4f46e5; text-decoration: underline;">{{ admin_email }}</a>.
+                            </p>
+                            <p style="font-size: 16px; line-height: 24px; color: #1f2937; margin: 16px 0 0;">
+                                Best regards,<br>The AssessEEZ Team
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

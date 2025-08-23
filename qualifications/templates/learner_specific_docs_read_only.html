@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}View Learner Files - {{ qualification.qualification_title }}{% endblock %}
+
+{% block nav_items %}
+    {% if user_role == 'learner' %}
+    <a href="{% url 'qualifications:learner_view' qualification.id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Learner View</a>
+    {% elif user_role == 'eqa' %}
+    <a href="{% url 'qualifications:eqa_learner_list' qualification.id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to EQA View</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Qualification and Learner Details -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ qualification.qualification_title }}</h2>
+        <p class="text-gray-600 mb-2"><strong>Learner:</strong> {{ learner_name|default:"Unknown" }}</p>
+        <p class="text-gray-600 mb-2"><strong>Institute:</strong> {{ business.name }} (ID: {{ business.business_id }})</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700{% else %}bg-red-100 text-red-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Existing Files -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Uploaded Files</h3>
+        {% if documents %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Title</th>
+                        <th class="py-3 px-6 text-left">Description</th>
+                        <th class="py-3 px-6 text-left">File</th>
+                        <th class="py-3 px-6 text-left">Uploaded By</th>
+                        <th class="py-3 px-6 text-left">Uploaded At</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm">
+                    {% for doc in documents %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6">{{ doc.title }}</td>
+                        <td class="py-3 px-6">{{ doc.description|default:"No description" }}</td>
+                        <td class="py-3 px-6">
+                            <a href="{{ doc.file.url }}" class="text-blue-600 hover:underline" target="_blank">View File</a>
+                        </td>
+                        <td class="py-3 px-6">{{ doc.uploaded_by_name }} ({{ doc.uploader_role }})</td>
+                        <td class="py-3 px-6">{{ doc.uploaded_at|date:"Y-m-d H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-gray-600">No files uploaded for this learner.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="{% static 'favicon-32x32.png' %}" sizes="32x32">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to AssessEEZ</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: #f3f4f6; color: #1f2937;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f3f4f6; padding: 40px 0;" cellpadding="0" cellspacing="0">
+        <tr>
+            <td style="text-align: center;">
+                <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="background-color: #2563eb; padding: 20px; text-align: center;">
+                            <h1 style="color: #ffffff; font-size: 24px; margin: 0;">Welcome to {{ business_name }}!</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 24px;">
+                            <p style="font-size: 16px; line-height: 24px; color: #1f2937; margin: 0 0 16px;">
+                                Dear {{ full_name|default:"User" }},
+                            </p>
+                            <p style="font-size: 16px; line-height: 24px; color: #1f2937; margin: 0 0 16px;">
+                                Your account has been created as a <strong>{{ role|default:"User" }}</strong> for the qualification: <strong>{{ qualification_title|default:"Not specified" }}</strong>.
+                            </p>
+                            <table role="presentation" style="width: 100%; border-collapse: collapse;" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="font-size: 16px; font-weight: bold; color: #1f2937; padding: 8px 0;">Email:</td>
+                                    <td style="font-size: 16px; color: #1f2937; padding: 8px 0;">{{ email }}</td>
+                                </tr>
+                                {% if password %}
+<tr>
+    <td style="font-size: 16px; font-weight: bold; color: #1f2937; padding: 8px 0;">Password:</td>
+    <td style="font-size: 16px; color: #1f2937; padding: 8px 0;">{{ password }}</td>
+</tr>
+{% else %}
+<tr>
+    <td style="font-size: 16px; font-weight: bold; color: #1f2937; padding: 8px 0;">Password:</td>
+    <td style="font-size: 16px; color: #1f2937; padding: 8px 0;">Please use your existing password to log in.</td>
+</tr>
+{% endif %}
+                            </table>
+                            <p style="font-size: 16px; line-height: 24px; color: #1f2937; margin: 16px 0;">
+                                Please log in <a href="{{ portal_url }}" style="color: #4f46e5; text-decoration: underline;">here</a> to access the dashboard. If you wish to change the password, click on Forgot Password on the Login page.
+                            </p>
+                            {% if logo_available %}
+                                <p style="text-align: center; margin: 16px 0;">
+                                    <img src="cid:assesseez_logo" alt="AssessEEZ Logo" style="max-width: 150px; height: auto;">
+                                </p>
+                            {% else %}
+                                <p style="text-align: center; font-size: 16px; color: #1f2937; margin: 16px 0;">AssessEEZ Logo</p>
+                            {% endif %}
+                            <p style="font-size: 16px; line-height: 24px; color: #1f2937; margin: 16px 0 0;">
+                                Best regards,<br>{{ sender_name }}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

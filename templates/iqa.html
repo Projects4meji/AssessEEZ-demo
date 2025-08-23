@@ -1,0 +1,460 @@
+{% extends 'base1.html' %}
+{% load static %}
+
+{% block title %}IQA - AssessEEZ{% endblock %}
+
+{% block content %}
+<!-- Enhanced Hero Section -->
+<section class="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-24 relative overflow-hidden">
+    <!-- Animated background elements -->
+    <div class="absolute inset-0">
+        <div class="absolute top-10 left-10 w-20 h-20 bg-white opacity-10 rounded-full animate-pulse"></div>
+        <div class="absolute top-32 right-20 w-16 h-16 bg-yellow-400 opacity-20 rounded-full animate-bounce"></div>
+        <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-blue-300 opacity-15 rounded-full animate-ping"></div>
+    </div>
+    
+    <div class="container mx-auto max-w-screen-xl px-6 md:px-12 lg:px-16 text-center relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <!-- Main Heading -->
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-shadow animate__animated animate__fadeInDown">
+                Your Quality
+                <span class="block text-yellow-400">Monitoring Hub</span>
+            </h1>
+            
+            <!-- Subheading -->
+            <p class="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed animate__animated animate__fadeInUp animate__delay-1s">
+                Monitor assessors, provide feedback, and ensure quality with an intuitive dashboard.
+            </p>
+            
+            <!-- Image Section -->
+            <div class="mt-12 animate__animated animate__fadeInUp animate__delay-2s">
+                <div class="w-full max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-all duration-500">
+                    <img src="{% static 'images/iqa.png' %}" alt="IQA Platform" class="w-full h-auto">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Enhanced Features Section -->
+<section class="py-24 bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, #3b82f6 2px, transparent 2px), radial-gradient(circle at 75% 75%, #1e40af 2px, transparent 2px); background-size: 50px 50px;"></div>
+    </div>
+    
+    <div class="container mx-auto max-w-screen-xl px-6 md:px-12 lg:px-16 relative z-10">
+        <!-- Section Header -->
+        <div class="text-center mb-20">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gray-800">Your Quality Assurance Tools</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                Discover how AssessEEZ empowers IQAs with comprehensive monitoring and feedback capabilities
+            </p>
+        </div>
+
+        <!-- Feature Cards Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20 auto-rows-fr">
+            <!-- Feature Card 1 -->
+            <div class="feature-card group">
+                <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 transform hover:scale-105 transition-all duration-500 hover:shadow-2xl">
+                    <div class="flex items-start space-x-6 mb-6">
+                        <div class="feature-icon-wrapper">
+                            <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+                                <svg class="w-8 h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors duration-300">
+                                Monitor Assessor Performance
+                            </h3>
+                            <p class="text-gray-600 leading-relaxed flex-grow">
+                                Ensure the integrity of the assessment process with our robust quality assurance system. Review assessment decisions made by assessors to maintain high standards.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="feature-details">
+                        <p class="text-gray-600 leading-relaxed">
+                            Each decision is evaluated and marked as either "Accepted" or "Non-Conformity." An "Accepted" mark reassures assessors of their accurate judgments, while a "Non-Conformity" mark prompts re-assessment, guiding assessors to address discrepancies and align with quality standards.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Card 2 -->
+            <div class="feature-card group">
+                <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 transform hover:scale-105 transition-all duration-500 hover:shadow-2xl">
+                    <div class="flex items-start space-x-6 mb-6">
+                        <div class="feature-icon-wrapper">
+                            <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+                                <svg class="w-8 h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors duration-300">
+                                Provide Timely Feedback
+                            </h3>
+                            <p class="text-gray-600 leading-relaxed flex-grow">
+                                Elevate your assessment process with our robust feedback system. As an IQA, you can provide interim sampling feedback or summative sampling feedback.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="feature-details">
+                        <p class="text-gray-600 leading-relaxed">
+                            Our intuitive platform makes it easy to document and share constructive insights, fostering continuous improvement in assessment practices. Each feedback entry is clearly organized, allowing you to track its status and impact over time.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Card 3 -->
+            <div class="feature-card group">
+                <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 transform hover:scale-105 transition-all duration-500 hover:shadow-2xl">
+                    <div class="flex items-start space-x-6 mb-6">
+                        <div class="feature-icon-wrapper">
+                            <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+                                <svg class="w-8 h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors duration-300">
+                                View Assessment Footprints
+                            </h3>
+                            <p class="text-gray-600 leading-relaxed flex-grow">
+                                Gain a comprehensive view of the entire assessment process with our robust tracking system. Every assessor decision, along with detailed feedback, is meticulously recorded.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="feature-details">
+                        <p class="text-gray-600 leading-relaxed">
+                            Dive into a complete overview of all assessment decisions, including learners' submitted work, progress, and outcomes. This clear, organized record allows you to monitor the quality of assessments, identify trends, and provide informed guidance to assessors.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Card 4 -->
+            <div class="feature-card group">
+                <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 transform hover:scale-105 transition-all duration-500 hover:shadow-2xl">
+                    <div class="flex items-start space-x-6 mb-6">
+                        <div class="feature-icon-wrapper">
+                            <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+                                <svg class="w-8 h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors duration-300">
+                                Ensure Quality Standards
+                            </h3>
+                            <p class="text-gray-600 leading-relaxed flex-grow">
+                                As an Internal Quality Assurer (IQA), you are the guardian of assessment quality. AssessEEZ equips you with powerful tools and comprehensive visibility.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="feature-details">
+                        <p class="text-gray-600 leading-relaxed">
+                            Our intuitive platform provides detailed insights into assessor activities, learner progress, and sampling ratios. Monitor pending assessments, review submitted work, and track compliance effortlessly, ensuring every step aligns with quality benchmarks.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Card 5 -->
+            <div class="feature-card group">
+                <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 transform hover:scale-105 transition-all duration-500 hover:shadow-2xl">
+                    <div class="flex items-start space-x-6 mb-6">
+                        <div class="feature-icon-wrapper">
+                            <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+                                <svg class="w-8 h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors duration-300">
+                                Track IQA Activities
+                            </h3>
+                            <p class="text-gray-600 leading-relaxed flex-grow">
+                                Take charge of your Internal Quality Assurance responsibilities with our comprehensive visibility tools. The intuitive dashboard provides a clear overview of quality assurance status.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="feature-details">
+                        <p class="text-gray-600 leading-relaxed">
+                            Easily track which assessors have been quality assured and to what extent, with detailed percentages for each. Whether an assessor's work requires 100% quality assurance or a lighter touch, our system ensures complete transparency into the status of every assessment.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Card 6 - Call to Action -->
+            <div class="feature-card group">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl shadow-xl p-8 text-white transform hover:scale-105 transition-all duration-500 hover:shadow-2xl">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 transform group-hover:rotate-12 transition-transform duration-300">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Ready to Elevate Quality Assurance?</h3>
+                        <p class="text-blue-100 mb-6">
+                            Join quality assurance professionals who trust AssessEEZ for comprehensive monitoring and feedback.
+                        </p>
+                        <a href="{% url 'contact' %}" class="inline-flex items-center px-6 py-3 bg-yellow-400 text-gray-800 font-semibold rounded-xl hover:bg-yellow-300 transform hover:scale-105 transition-all duration-300">
+                            Get Started Today
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Enhanced IQA Page Styles */
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-card {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .feature-card.animate {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .feature-card > div {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .feature-icon-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-icon-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .feature-card:hover .feature-icon-wrapper::before {
+        left: 100%;
+    }
+
+    .feature-details {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 1rem;
+        margin-top: 1rem;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover .feature-details {
+        opacity: 1;
+        max-height: 200px;
+        margin-top: 1rem;
+    }
+
+    /* Floating animation for background elements */
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    /* Pulse animation for icons */
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 5px rgba(251, 191, 36, 0.5); }
+        50% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.8); }
+    }
+
+    .feature-card:hover .feature-icon-wrapper > div {
+        animation: pulse-glow 2s ease-in-out infinite;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+    }
+    
+    /* Ensure icon background stays yellow always */
+    .feature-icon-wrapper > div {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+    }
+    
+    .feature-card:hover .feature-icon-wrapper > div {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .grid-cols-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .text-2xl {
+            font-size: 1.25rem !important;
+        }
+
+        .text-lg {
+            font-size: 1rem !important;
+        }
+
+        .p-8 {
+            padding: 1.5rem !important;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .p-8 {
+            padding: 1rem !important;
+        }
+    }
+    
+    /* Ensure Get Started card background stays blue always */
+    .feature-card:last-child > div {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    }
+    
+    .feature-card:hover:last-child > div {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Intersection Observer for feature cards
+    document.addEventListener('DOMContentLoaded', function() {
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all feature cards
+        const featureCards = document.querySelectorAll('.feature-card');
+        featureCards.forEach((card, index) => {
+            observer.observe(card);
+            // Add staggered animation delay
+            card.style.transitionDelay = `${index * 0.1}s`;
+        });
+
+        // Add floating animation to background elements
+        const floatingElements = document.querySelectorAll('.animate-pulse, .animate-bounce, .animate-ping');
+        floatingElements.forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.5}s`;
+        });
+
+        // Add ripple effect to interactive elements
+        const interactiveElements = document.querySelectorAll('.feature-card, a');
+        interactiveElements.forEach(element => {
+            element.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add hover effects for feature cards
+        featureCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    });
+
+    // Ripple effect styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}

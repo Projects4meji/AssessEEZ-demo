@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static qualifications_filters %}
+
+{% block title %}Learner View{% endblock %}
+
+{% block nav_title %}Learner View{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'qualifications:submit_docs' qualification.id %}" class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-black">Submit Mandatory Documents</a>
+    <a href="{% url 'qualifications:learner_resources' qualification.id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Qualification Resources</a>
+    <a href="{% url 'qualifications:learner_specific_docs' qualification.id learner.id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Assessor Docs</a>
+    <button onclick="history.back()" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back</button>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Learner and Qualification Details -->
+    <div class="bg-blue-50 p-6 rounded-lg shadow-md mb-8">
+        <h3 class="text-2xl font-bold text-blue-900 text-center mb-4">{{ qualification.qualification_title }}</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-[3fr_5fr_3fr_5fr_3fr_5fr_3fr] gap-4">
+            <div class="space-y-1 text-left">
+                <div class="text-blue-700 text-sm font-semibold">Reference Number:</div>
+                <div class="text-blue-900 text-sm">{{ learner.batch_number|default:"N/A" }}</div>
+            </div>
+            <div class="space-y-1 text-left">
+                <div class="text-blue-700 text-sm font-semibold">Date of Birth:</div>
+                <div class="text-blue-900 text-sm">{{ learner.dob|date:"Y-m-d"|default:"N/A" }}</div>
+            </div>
+            <div class="space-y-1 text-left">
+                <div class="text-blue-700 text-sm font-semibold">Full Name:</div>
+                <div class="text-blue-900 text-sm">{{ learner.user.user.full_name|default:learner.user.user.email }}</div>
+            </div>
+            <div class="space-y-1 text-left">
+                <div class="text-blue-700 text-sm font-semibold">Email Address:</div>
+                <div class="text-blue-900 text-sm">{{ learner.user.user.email }}</div>
+            </div>
+            <div class="space-y-1 text-left">
+                <div class="text-blue-700 text-sm font-semibold">Phone Number:</div>
+                <div class="text-blue-900 text-sm">{{ learner.phone_number|default:"N/A" }}</div>
+            </div>
+            <div class="space-y-1 text-left">
+                <div class="text-blue-700 text-sm font-semibold">Date of Registration:</div>
+                <div class="text-blue-900 text-sm">{{ learner.date_of_registration|date:"Y-m-d"|default:"N/A" }}</div>
+            </div>
+            <div class="space-y-1 text-left">
+                <div class="text-blue-700 text-sm font-semibold">Institute:</div>
+                <div class="text-blue-900 text-sm">{{ business.name }} (ID: {{ business.business_id }})</div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <div class="text-blue-900 text-xl font-semibold underline">Completion:</div>
+            <div class="text-blue-900 text-base">{{ completion_percentage|floatformat:2 }}%</div>
+            <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
+                <div class="bg-blue-600 h-4 rounded-full" style="width: {{ completion_percentage|floatformat:2 }}%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Units, Learning Outcomes, and Assessment Criteria -->
+    {% if structured_data %}
+    {% for unit in structured_data %}
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ unit.title }} ({{ unit.number }})</h3>
+        {% for lo in unit.learning_outcomes %}
+        <div class="mt-4">
+            <div class="flex justify-between items-center">
+                <h4 class="text-lg font-medium text-gray-700 mb-2">Learning Outcome: {{ lo.detail }}</h4>
+                <div class="space-x-2">
+                    {% if lo.has_feedback %}
+                    <a href="{% url 'qualifications:feedback_history' qualification.id learner.id lo.id %}" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">Feedback History</a>
+                    {% else %}
+                    <span class="bg-gray-400 text-white font-bold py-2 px-4 rounded cursor-not-allowed">Feedback History</span>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Workbook Upload -->
+            <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                <h5 class="text-base font-medium text-gray-700 mb-2">Workbook</h5>
+                {% if lo.workbook_submission %}
+                <p class="text-gray-600 mb-2"><strong>Status:</strong> {{ lo.workbook_status }}</p>
+                {% if lo.workbook_url %}
+                <a href="{{ lo.workbook_url }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded text-sm mt-3 mb-3">View Workbook</a>
+                {% else %}
+                <span class="inline-block bg-gray-400 text-white font-bold py-2 px-3 rounded text-sm mt-3 mb-3 cursor-not-allowed">View Workbook</span>
+                {% endif %}
+                {% if lo.can_upload_workbook %}
+                <form method="post" enctype="multipart/form-data" class="mt-2 space-y-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="lo_id" value="{{ lo.id }}">
+                    <div>
+                        <label for="workbook_file_{{ lo.id }}" class="block text-sm font-medium text-gray-700">Upload Workbook</label>
+                        <input type="file" name="workbook_file" id="workbook_file_{{ lo.id }}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    </div>
+                    <button type="submit" name="workbook_submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{% if lo.workbook_status == 'SUBMITTED' %}Update{% else %}Submit{% endif %} Workbook</button>
+                </form>
+                {% else %}
+                <p class="text-gray-500">Workbook upload disabled ({{ lo.workbook_status }})</p>
+                {% endif %}
+                {% else %}
+                <p class="text-gray-600 mb-2"><strong>Status:</strong> Not Submitted</p>
+                <form method="post" enctype="multipart/form-data" class="mt-2 space-y-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="lo_id" value="{{ lo.id }}">
+                    <div>
+                        <label for="workbook_file_{{ lo.id }}" class="block text-sm font-medium text-gray-700">Upload Workbook</label>
+                        <input type="file" name="workbook_file" id="workbook_file_{{ lo.id }}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    </div>
+                    <button type="submit" name="workbook_submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit Workbook</button>
+                </form>
+                {% endif %}
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left w-3/5">Assessment Criterion</th>
+                            <th class="py-3 px-6 text-left w-2/5">Upload Evidence</th>
+                            <th class="py-3 px-6 text-left">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm">
+                        {% for ac in lo.assessment_criteria %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-100 {% if ac.status == 'SUBMITTED' %}bg-yellow-100{% elif ac.status == 'ACCEPTED' %}bg-green-100{% elif ac.status == 'Resubmission Required' %}bg-red-100{% endif %}">
+                            <td class="py-3 px-6">
+                                {{ ac.detail }}
+                                <br>
+                                {% if ac.evidence_url %}
+                                <a href="{{ ac.evidence_url }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded text-sm mt-3 mb-3">View Evidence</a>
+                                {% else %}
+                                <span class="inline-block bg-gray-400 text-white font-bold py-2 px-3 rounded text-sm mt-3 mb-3 cursor-not-allowed">View Evidence</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-6">
+                                {% if ac.can_upload %}
+                                <form method="post" enctype="multipart/form-data" class="space-y-2">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="ac_id" value="{{ ac.id }}">
+                                    <div>
+                                        <label for="evidence_detail_{{ ac.id }}" class="block text-sm font-medium text-gray-700">Evidence Detail</label>
+                                        <textarea name="evidence_detail" id="evidence_detail_{{ ac.id }}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" rows="4">{{ ac.evidence_detail }}</textarea>
+                                    </div>
+                                    <div>
+                                        <label for="evidence_files_{{ ac.id }}" class="block text-sm font-medium text-gray-700">Upload Files</label>
+                                        <input type="file" name="evidence_files" id="evidence_files_{{ ac.id }}" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" multiple>
+                                    </div>
+                                    <button type="submit" name="evidence_submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">{% if ac.status == 'SUBMITTED' %}Update{% else %}Submit{% endif %}</button>
+                                </form>
+                                {% else %}
+                                <p class="text-gray-500">Upload disabled ({{ ac.status }})</p>
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-6">{{ ac.status }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="py-3 px-6 text-gray-500">No assessment criteria available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-gray-500">No learning outcomes available.</div>
+        {% endfor %}
+    </div>
+    {% empty %}
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <p class="text-gray-500">No units available for this qualification.</p>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <p class="text-gray-500">No structured data available.</p>
+    </div>
+    {% endif %}
+
+    <!-- Custom Styles for Form Inputs -->
+    <style>
+        textarea[name="evidence_detail"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        textarea[name="evidence_detail"]:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: #f9fafb;
+            transition: border-color 0.2s ease-in-out;
+        }
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+    </style>
+</div>
+{% endblock %}

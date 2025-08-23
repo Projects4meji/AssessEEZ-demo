@@ -1,0 +1,549 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Qualification - AssessEEZ{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Edit Qualification</h1>
+        <form id="editQualificationForm" class="space-y-6" style="display: none;">
+            {% csrf_token %}
+            <input type="hidden" id="qualification_id" name="qualification_id">
+            <div class="space-y-4">
+                <div>
+                    <label for="qualification_title" class="block text-sm font-medium text-gray-700 mb-1">Qualification Title</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" id="qualification_title" name="qualification_title" required>
+                </div>
+                <div>
+                    <label for="qualification_number" class="block text-sm font-medium text-gray-700 mb-1">Qualification Number</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" id="qualification_number" name="qualification_number" required>
+                </div>
+                <div>
+                    <label for="awarding_body" class="block text-sm font-medium text-gray-700 mb-1">Awarding Body</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" id="awarding_body" name="awarding_body" required>
+                </div>
+            </div>
+            <div id="units-container" class="space-y-4">
+                <h3 class="text-xl font-bold text-gray-800">Units</h3>
+            </div>
+            <div class="flex space-x-4">
+                <a href="{% url 'users:admin_dashboard' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">Back</a>
+                <button type="button" class="add-unit bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Add Unit</button>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Update Qualification</button>
+                <button type="button" id="deleteQualification" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md">Delete Qualification</button>
+            </div>
+        </form>
+        <div id="response" class="mt-4 max-w-md mx-auto"></div>
+    </div>
+</div>
+
+<script>
+// Get CSRF token from cookie
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+let unitIndex = 0;
+let loIndices = [];
+let acIndices = [];
+
+// Function to load qualification data
+async function loadQualification(qualId) {
+    const responseDiv = document.getElementById('response');
+    try {
+        const response = await fetch(`/qualifications/edit/${qualId}/`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        });
+        const data = await response.json();
+        if (response.ok) {
+            populateForm(data);
+            document.getElementById('qualification_id').value = qualId;
+            document.getElementById('editQualificationForm').style.display = 'block';
+            responseDiv.innerHTML = `<div class="bg-green-100 text-green-700 p-4 rounded-md border border-green-300 flex items-center"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Qualification loaded successfully!</div>`;
+        } else {
+            responseDiv.innerHTML = `<div class="bg-red-100 text-red-700 p-4 rounded-md border border-green-300 flex items-center"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>${data.error || JSON.stringify(data)}</div>`;
+        }
+    } catch (error) {
+        responseDiv.innerHTML = `<div class="bg-red-100 text-red-700 p-4 rounded-md border border-green-300 flex items-center"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>Error: ${error.message}</div>`;
+    }
+}
+
+// Auto-load qualification
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const qualId = urlParams.get('id');
+    if (qualId) {
+        loadQualification(qualId);
+    } else {
+        document.getElementById('response').innerHTML = `<div class="bg-red-100 text-red-700 p-4 rounded-md border border-green-300 flex items-center"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>No qualification selected.</div>`;
+    }
+});
+
+// Populate form
+function populateForm(data) {
+    console.log('Populating form with data:', data);
+    document.getElementById('qualification_title').value = data.qualification_title;
+    document.getElementById('qualification_number').value = data.qualification_number;
+    document.getElementById('awarding_body').value = data.awarding_body;
+
+    const unitsContainer = document.getElementById('units-container');
+    unitsContainer.innerHTML = '<h3 class="text-xl font-bold text-gray-800">Units</h3>';
+    unitIndex = 0;
+    loIndices = [];
+    acIndices = [];
+
+    data.units.sort((a, b) => a.serial_number - b.serial_number).forEach((unit, uIdx) => {
+        console.log(`Creating unit ${uIdx}:`, unit);
+        const unitDiv = document.createElement('div');
+        unitDiv.className = 'unit-field space-y-4';
+        unitDiv.dataset.unitIndex = uIdx;
+        unitDiv.innerHTML = `
+            <div class="flex space-x-4 items-start">
+                <div class="w-16">
+                    <label class="block text-sm font-medium text-gray-700">Sr#</label>
+                    <span class="serial-number block px-3 py-2">${unit.serial_number.toFixed(0)}</span>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700">Unit Title</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 unit-title" name="units[${uIdx}][unit_title]" value="${unit.unit_title}" required>
+                </div>
+            </div>
+            <div class="flex space-x-4 items-start">
+                <div class="w-16"></div>
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700">Unit Number</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 unit-number" name="units[${uIdx}][unit_number]" value="${unit.unit_number}" required>
+                    <input type="hidden" class="unit-id" name="units[${uIdx}][id]" value="${unit.id}">
+                    <div class="flex justify-end mt-2 space-x-4">
+                        <button type="button" class="remove-unit bg-red-500 hover:bg-red-600 text-white text-[8px] px-2 py-1 rounded-md">Remove Unit</button>
+                    </div>
+                </div>
+            </div>
+            <h4 class="text-lg font-bold text-gray-800">Learning Outcomes</h4>
+            <div class="learning-outcomes-container border-l-4 border-gray-300 pl-6 space-y-4"></div>
+        `;
+        const loContainer = unitDiv.querySelector('.learning-outcomes-container');
+        loIndices[uIdx] = 0;
+        acIndices[uIdx] = [];
+
+        unit.learning_outcomes.sort((a, b) => a.serial_number - b.serial_number).forEach((lo, lIdx) => {
+            console.log(`Creating LO ${lIdx} for unit ${uIdx}:`, lo);
+            const loDiv = document.createElement('div');
+            loDiv.className = 'learning-outcome-field space-y-4';
+            loDiv.dataset.loIndex = lIdx;
+            loDiv.innerHTML = `
+                <div class="flex space-x-4 items-start">
+                    <div class="w-16">
+                        <label class="block text-xs font-normal text-gray-600">Sr#</label>
+                        <span class="serial-number block px-3 py-2">${lo.serial_number.toFixed(1)}</span>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-normal text-gray-600">LO Detail</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 lo-detail" name="units[${uIdx}][learning_outcomes][${lIdx}][lo_detail]" value="${lo.lo_detail}" required>
+                        <input type="hidden" class="lo-id" name="units[${uIdx}][learning_outcomes][${lIdx}][id]" value="${lo.id}">
+                        <div class="flex justify-end mt-2 space-x-4">
+                            <button type="button" class="add-lo bg-gray-500 hover:bg-gray-600 text-white text-[8px] px-2 py-1 rounded-md">Add LO</button>
+                            <button type="button" class="remove-lo bg-red-500 hover:bg-red-600 text-white text-[8px] px-2 py-1 rounded-md">Remove LO</button>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="text-base font-bold text-gray-800">Assessment Criteria</h5>
+                <div class="assessment-criteria-container border-l-4 border-gray-300 pl-6 space-y-4"></div>
+            `;
+            loContainer.appendChild(loDiv);
+            const acContainer = loDiv.querySelector('.assessment-criteria-container');
+            acIndices[uIdx][lIdx] = 0;
+
+            lo.assessment_criteria.sort((a, b) => a.serial_number - b.serial_number).forEach((ac, aIdx) => {
+                console.log(`Creating AC ${aIdx} for LO ${lIdx}, unit ${uIdx}:`, ac);
+                const acDiv = document.createElement('div');
+                acDiv.className = 'assessment-criterion-field space-y-2';
+                acDiv.dataset.acIndex = aIdx;
+                acDiv.innerHTML = `
+                    <div class="flex space-x-4 items-start">
+                        <div class="w-16">
+                            <label class="block text-xs font-normal text-gray-600">Sr#</label>
+                            <span class="serial-number block px-3 py-2">${ac.serial_number.toFixed(2)}</span>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-normal text-gray-600">AC Detail</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ac-detail" name="units[${uIdx}][learning_outcomes][${lIdx}][assessment_criteria][${aIdx}][ac_detail]" value="${ac.ac_detail}" required>
+                            <input type="hidden" class="ac-id" name="units[${uIdx}][learning_outcomes][${lIdx}][assessment_criteria][${aIdx}][id]" value="${ac.id}">
+                            <div class="flex justify-end mt-2 space-x-4">
+                                <button type="button" class="add-ac bg-gray-500 hover:bg-gray-600 text-white text-[8px] px-2 py-1 rounded-md">Add AC</button>
+                                <button type="button" class="remove-ac bg-red-500 hover:bg-red-600 text-white text-[8px] px-2 py-1 rounded-md">Remove AC</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                acContainer.appendChild(acDiv);
+                acIndices[uIdx][lIdx]++;
+            });
+
+            loIndices[uIdx]++;
+        });
+
+        unitsContainer.appendChild(unitDiv);
+        unitIndex = Math.max(unitIndex, uIdx + 1);
+    });
+}
+
+// Get max indices for serial numbers
+function getMaxIndices(container, type, unitIdx = null, loIdx = null) {
+    let max = 0;
+    if (type === 'unit') {
+        const units = container.querySelectorAll('.unit-field');
+        max = units.length;
+    } else if (type === 'lo') {
+        const loContainer = container.querySelector(`.unit-field[data-unit-index="${unitIdx}"] .learning-outcomes-container`);
+        if (loContainer) {
+            max = loContainer.querySelectorAll('.learning-outcome-field').length;
+        }
+    } else if (type === 'ac') {
+        const acContainer = container.querySelector(`.unit-field[data-unit-index="${unitIdx}"] .learning-outcome-field[data-lo-index="${loIdx}"] .assessment-criteria-container`);
+        if (acContainer) {
+            max = acContainer.querySelectorAll('.assessment-criterion-field').length;
+        }
+    }
+    return max;
+}
+
+// Dynamic field addition/removal
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('add-unit')) {
+        console.log('Adding new unit');
+        const container = document.getElementById('units-container');
+        const unitSerial = getMaxIndices(container, 'unit') + 1;
+        const unitDiv = document.createElement('div');
+        unitDiv.className = 'unit-field space-y-4';
+        unitDiv.dataset.unitIndex = unitIndex;
+        unitDiv.innerHTML = `
+            <div class="flex space-x-4 items-start">
+                <div class="w-16">
+                    <label class="block text-sm font-medium text-gray-700">Sr#</label>
+                    <span class="serial-number block px-3 py-2">${unitSerial}</span>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700">Unit Title</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 unit-title" name="units[${unitIndex}][unit_title]" required>
+                </div>
+            </div>
+            <div class="flex space-x-4 items-start">
+                <div class="w-16"></div>
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700">Unit Number</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 unit-number" name="units[${unitIndex}][unit_number]" required>
+                    <div class="flex justify-end mt-2 space-x-4">
+                        <button type="button" class="remove-unit bg-red-500 hover:bg-red-600 text-white text-[8px] px-2 py-1 rounded-md">Remove Unit</button>
+                    </div>
+                </div>
+            </div>
+            <h4 class="text-lg font-bold text-gray-800">Learning Outcomes</h4>
+            <div class="learning-outcomes-container border-l-4 border-gray-300 pl-6 space-y-4">
+                <div class="learning-outcome-field space-y-4" data-lo-index="0">
+                    <div class="flex space-x-4 items-start">
+                        <div class="w-16">
+                            <label class="block text-xs font-normal text-gray-600">Sr#</label>
+                            <span class="serial-number block px-3 py-2">${unitSerial}.1</span>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-normal text-gray-600">LO Detail</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 lo-detail" name="units[${unitIndex}][learning_outcomes][0][lo_detail]" required>
+                            <div class="flex justify-end mt-2 space-x-4">
+                                <button type="button" class="add-lo bg-gray-500 hover:bg-gray-600 text-white text-[8px] px-2 py-1 rounded-md">Add LO</button>
+                                <button type="button" class="remove-lo bg-red-500 hover:bg-red-600 text-white text-[8px] px-2 py-1 rounded-md">Remove LO</button>
+                            </div>
+                        </div>
+                    </div>
+                    <h5 class="text-base font-bold text-gray-800">Assessment Criteria</h5>
+                    <div class="assessment-criteria-container border-l-4 border-gray-300 pl-6 space-y-4">
+                        <div class="assessment-criterion-field space-y-2" data-ac-index="0">
+                            <div class="flex space-x-4 items-start">
+                                <div class="w-16">
+                                    <label class="block text-xs font-normal text-gray-600">Sr#</label>
+                                    <span class="serial-number block px-3 py-2">${unitSerial}.11</span>
+                                </div>
+                                <div class="flex-1">
+                                    <label class="block text-xs font-normal text-gray-600">AC Detail</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ac-detail" name="units[${unitIndex}][learning_outcomes][0][assessment_criteria][0][ac_detail]" required>
+                                    <div class="flex justify-end mt-2 space-x-4">
+                                        <button type="button" class="add-ac bg-gray-500 hover:bg-gray-600 text-white text-[8px] px-2 py-1 rounded-md">Add AC</button>
+                                        <button type="button" class="remove-ac bg-red-500 hover:bg-red-600 text-white text-[8px] px-2 py-1 rounded-md">Remove AC</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(unitDiv);
+        loIndices[unitIndex] = 1;
+        acIndices[unitIndex] = [1];
+        unitIndex++;
+    }
+
+    if (e.target.classList.contains('add-lo')) {
+        console.log('Adding new LO');
+        const unitDiv = e.target.closest('.unit-field');
+        const unitIdx = unitDiv.dataset.unitIndex;
+        const loContainer = unitDiv.querySelector('.learning-outcomes-container');
+        const unitSerial = parseFloat(unitDiv.querySelector('.serial-number').textContent);
+        const loSerial = getMaxIndices(document.getElementById('units-container'), 'lo', unitIdx) + 1;
+        const loDiv = document.createElement('div');
+        loDiv.className = 'learning-outcome-field space-y-4';
+        loDiv.dataset.loIndex = loIndices[unitIdx];
+        loDiv.innerHTML = `
+            <div class="flex space-x-4 items-start">
+                <div class="w-16">
+                    <label class="block text-xs font-normal text-gray-600">Sr#</label>
+                    <span class="serial-number block px-3 py-2">${unitSerial}.${loSerial}</span>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-xs font-normal text-gray-600">LO Detail</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 lo-detail" name="units[${unitIdx}][learning_outcomes][${loIndices[unitIdx]}][lo_detail]" required>
+                    <div class="flex justify-end mt-2 space-x-4">
+                        <button type="button" class="add-lo bg-gray-500 hover:bg-gray-600 text-white text-[8px] px-2 py-1 rounded-md">Add LO</button>
+                        <button type="button" class="remove-lo bg-red-500 hover:bg-red-600 text-white text-[8px] px-2 py-1 rounded-md">Remove LO</button>
+                    </div>
+                </div>
+            </div>
+            <h5 class="text-base font-bold text-gray-800">Assessment Criteria</h5>
+            <div class="assessment-criteria-container border-l-4 border-gray-300 pl-6 space-y-4">
+                <div class="assessment-criterion-field space-y-2" data-ac-index="0">
+                    <div class="flex space-x-4 items-start">
+                        <div class="w-16">
+                            <label class="block text-xs font-normal text-gray-600">Sr#</label>
+                            <span class="serial-number block px-3 py-2">${unitSerial}.${loSerial}1</span>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-normal text-gray-600">AC Detail</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ac-detail" name="units[${unitIdx}][learning_outcomes][${loIndices[unitIdx]}][assessment_criteria][0][ac_detail]" required>
+                            <div class="flex justify-end mt-2 space-x-4">
+                                <button type="button" class="add-ac bg-gray-500 hover:bg-gray-600 text-white text-[8px] px-2 py-1 rounded-md">Add AC</button>
+                                <button type="button" class="remove-ac bg-red-500 hover:bg-red-600 text-white text-[8px] px-2 py-1 rounded-md">Remove AC</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        loContainer.appendChild(loDiv);
+        acIndices[unitIdx][loIndices[unitIdx]] = 1;
+        loIndices[unitIdx]++;
+    }
+
+    if (e.target.classList.contains('add-ac')) {
+        console.log('Adding new AC');
+        const loDiv = e.target.closest('.learning-outcome-field');
+        const unitDiv = loDiv.closest('.unit-field');
+        const unitIdx = unitDiv.dataset.unitIndex;
+        const loIdx = loDiv.dataset.loIndex;
+        const acContainer = loDiv.querySelector('.assessment-criteria-container');
+        const unitSerial = parseFloat(unitDiv.querySelector('.serial-number').textContent);
+        const loSerial = parseFloat(loDiv.querySelector('.serial-number').textContent.split('.')[1]);
+        const acSerial = getMaxIndices(document.getElementById('units-container'), 'ac', unitIdx, loIdx) + 1;
+        const acDiv = document.createElement('div');
+        acDiv.className = 'assessment-criterion-field space-y-2';
+        acDiv.dataset.acIndex = acIndices[unitIdx][loIdx];
+        acDiv.innerHTML = `
+            <div class="flex space-x-4 items-start">
+                <div class="w-16">
+                    <label class="block text-xs font-normal text-gray-600">Sr#</label>
+                    <span class="serial-number block px-3 py-2">${unitSerial}.${loSerial}${acSerial}</span>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-xs font-normal text-gray-600">AC Detail</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ac-detail" name="units[${unitIdx}][learning_outcomes][${loIdx}][assessment_criteria][${acIndices[unitIdx][loIdx]}][ac_detail]" required>
+                    <div class="flex justify-end mt-2 space-x-4">
+                        <button type="button" class="add-ac bg-gray-500 hover:bg-gray-600 text-white text-[8px] px-2 py-1 rounded-md">Add AC</button>
+                        <button type="button" class="remove-ac bg-red-500 hover:bg-red-600 text-white text-[8px] px-2 py-1 rounded-md">Remove AC</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        acContainer.appendChild(acDiv);
+        acIndices[unitIdx][loIdx]++;
+    }
+
+    if (e.target.classList.contains('remove-unit') && document.querySelectorAll('.unit-field').length > 1) {
+        console.log('Removing unit');
+        e.target.closest('.unit-field').remove();
+        const container = document.getElementById('units-container');
+        container.querySelectorAll('.unit-field').forEach((item, idx) => {
+            item.dataset.unitIndex = idx;
+            item.querySelector('.serial-number').textContent = `${idx + 1}`;
+            item.querySelector('.unit-title').name = `units[${idx}][unit_title]`;
+            item.querySelector('.unit-number').name = `units[${idx}][unit_number]`;
+            const unitId = item.querySelector('.unit-id');
+            if (unitId) unitId.name = `units[${idx}][id]`;
+            const loContainer = item.querySelector('.learning-outcomes-container');
+            loContainer.querySelectorAll('.learning-outcome-field').forEach((lo, lIdx) => {
+                lo.dataset.loIndex = lIdx;
+                lo.querySelector('.serial-number').textContent = `${idx + 1}.${lIdx + 1}`;
+                lo.querySelector('.lo-detail').name = `units[${idx}][learning_outcomes][${lIdx}][lo_detail]`;
+                const loId = lo.querySelector('.lo-id');
+                if (loId) loId.name = `units[${idx}][learning_outcomes][${lIdx}][id]`;
+                const acContainer = lo.querySelector('.assessment-criteria-container');
+                acContainer.querySelectorAll('.assessment-criterion-field').forEach((ac, aIdx) => {
+                    ac.dataset.acIndex = aIdx;
+                    ac.querySelector('.serial-number').textContent = `${idx + 1}.${lIdx + 1}${aIdx + 1}`;
+                    ac.querySelector('.ac-detail').name = `units[${idx}][learning_outcomes][${lIdx}][assessment_criteria][${aIdx}][ac_detail]`;
+                    const acId = ac.querySelector('.ac-id');
+                    if (acId) acId.name = `units[${idx}][learning_outcomes][${lIdx}][assessment_criteria][${aIdx}][id]`;
+                });
+            });
+        });
+    }
+
+    if (e.target.classList.contains('remove-lo') && e.target.closest('.learning-outcomes-container').querySelectorAll('.learning-outcome-field').length > 1) {
+        console.log('Removing LO');
+        const loContainer = e.target.closest('.learning-outcomes-container');
+        e.target.closest('.learning-outcome-field').remove();
+        const unitIdx = loContainer.closest('.unit-field').dataset.unitIndex;
+        const unitSerial = parseFloat(loContainer.closest('.unit-field').querySelector('.serial-number').textContent);
+        loContainer.querySelectorAll('.learning-outcome-field').forEach((item, idx) => {
+            item.dataset.loIndex = idx;
+            item.querySelector('.serial-number').textContent = `${unitSerial}.${idx + 1}`;
+            item.querySelector('.lo-detail').name = `units[${unitIdx}][learning_outcomes][${idx}][lo_detail]`;
+            const loId = item.querySelector('.lo-id');
+            if (loId) loId.name = `units[${unitIdx}][learning_outcomes][${idx}][id]`;
+            const acContainer = item.querySelector('.assessment-criteria-container');
+            acContainer.querySelectorAll('.assessment-criterion-field').forEach((ac, aIdx) => {
+                ac.dataset.acIndex = aIdx;
+                ac.querySelector('.serial-number').textContent = `${unitSerial}.${idx + 1}${aIdx + 1}`;
+                ac.querySelector('.ac-detail').name = `units[${unitIdx}][learning_outcomes][${idx}][assessment_criteria][${aIdx}][ac_detail]`;
+                const acId = ac.querySelector('.ac-id');
+                if (acId) acId.name = `units[${unitIdx}][learning_outcomes][${idx}][assessment_criteria][${aIdx}][id]`;
+            });
+        });
+    }
+
+    if (e.target.classList.contains('remove-ac') && e.target.closest('.assessment-criteria-container').querySelectorAll('.assessment-criterion-field').length > 1) {
+        console.log('Removing AC');
+        const acContainer = e.target.closest('.assessment-criteria-container');
+        e.target.closest('.assessment-criterion-field').remove();
+        const unitIdx = acContainer.closest('.unit-field').dataset.unitIndex;
+        const loIdx = acContainer.closest('.learning-outcome-field').dataset.loIndex;
+        const unitSerial = parseFloat(acContainer.closest('.unit-field').querySelector('.serial-number').textContent);
+        const loSerial = parseFloat(acContainer.closest('.learning-outcome-field').querySelector('.serial-number').textContent.split('.')[1]);
+        acContainer.querySelectorAll('.assessment-criterion-field').forEach((item, idx) => {
+            item.dataset.acIndex = idx;
+            item.querySelector('.serial-number').textContent = `${unitSerial}.${loSerial}${idx + 1}`;
+            item.querySelector('.ac-detail').name = `units[${unitIdx}][learning_outcomes][${loIdx}][assessment_criteria][${idx}][ac_detail]`;
+            const acId = ac.querySelector('.ac-id');
+            if (acId) acId.name = `units[${unitIdx}][learning_outcomes][${loIdx}][assessment_criteria][${idx}][id]`;
+        });
+    }
+});
+
+// Delete Qualification
+document.getElementById('deleteQualification').addEventListener('click', async () => {
+    const qualId = document.getElementById('qualification_id').value;
+    if (!confirm('Are you sure you want to delete this qualification?')) return;
+
+    const responseDiv = document.getElementById('response');
+    try {
+        const response = await fetch(`/qualifications/edit/${qualId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            credentials: 'include'
+        });
+        const result = await response.json();
+        if (response.ok) {
+            responseDiv.innerHTML = `<div class="bg-green-100 text-green-700 p-4 rounded-md border border-green-300 flex items-center"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Qualification deleted successfully!</div>`;
+            setTimeout(() => window.location.href = "{% url 'users:admin_dashboard' %}", 1000);
+        } else {
+            responseDiv.innerHTML = `<div class="bg-red-100 text-red-700 p-4 rounded-md border border-green-300 flex items-center"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>${result.error}</div>`;
+        }
+    } catch (error) {
+        responseDiv.innerHTML = `<div class="bg-red-100 text-red-700 p-4 rounded-md border border-green-300 flex items-center"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>Error: ${error.message}</div>`;
+    }
+});
+
+// Form submission
+document.getElementById('editQualificationForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const qualId = document.getElementById('qualification_id').value;
+    const data = {
+        qualification_title: form.qualification_title.value,
+        qualification_number: form.qualification_number.value,
+        awarding_body: form.awarding_body.value,
+        units: []
+    };
+
+    const units = form.querySelectorAll('.unit-field');
+    units.forEach((unit, unitIdx) => {
+        const unitData = {
+            unit_title: unit.querySelector('.unit-title').value,
+            unit_number: unit.querySelector('.unit-number').value,
+            learning_outcomes: []
+        };
+        const unitId = unit.querySelector('.unit-id')?.value;
+        if (unitId) unitData.id = unitId;
+        const los = unit.querySelectorAll('.learning-outcome-field');
+        los.forEach((lo, loIdx) => {
+            const loData = {
+                lo_detail: lo.querySelector('.lo-detail').value,
+                assessment_criteria: []
+            };
+            const loId = lo.querySelector('.lo-id')?.value;
+            if (loId) loData.id = loId;
+            const acs = lo.querySelectorAll('.assessment-criterion-field');
+            acs.forEach((ac, acIdx) => {
+                const acData = {
+                    ac_detail: ac.querySelector('.ac-detail').value
+                };
+                const acId = ac.querySelector('.ac-id')?.value;
+                if (acId) acData.id = acId;
+                loData.assessment_criteria.push(acData);
+            });
+            unitData.learning_outcomes.push(loData);
+        });
+        data.units.push(unitData);
+    });
+
+    console.log('Submitting form data:', data);
+    const responseDiv = document.getElementById('response');
+    try {
+        const response = await fetch(`/qualifications/edit/${qualId}/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        });
+        const result = await response.json();
+        if (response.ok) {
+            responseDiv.innerHTML = `<div class="bg-green-100 text-green-700 p-4 rounded-md border border-green-300 flex items-center"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Qualification updated successfully!</div>`;
+            await loadQualification(qualId);
+        } else {
+            let errorMessage = result.assessment_criteria || result.units || result.error || 'An error occurred while updating the qualification.';
+            responseDiv.innerHTML = `<div class="bg-red-100 text-red-700 p-4 rounded-md border border-green-300 flex items-center"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>${errorMessage}</div>`;
+        }
+    } catch (error) {
+        responseDiv.innerHTML = `<div class="bg-red-100 text-red-700 p-4 rounded-md border border-green-300 flex items-center"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>Network error: ${error.message}</div>`;
+    }
+});
+</script>
+{% endblock %}

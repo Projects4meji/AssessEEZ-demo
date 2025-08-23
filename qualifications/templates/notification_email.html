@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AssessEEZ: New Notification</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border: 1px solid #e0e0e0;">
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 20px; text-align: center; background-color: #004085;">
+                            {% if logo_available %}
+                                <img src="cid:assesseez_logo" alt="AssessEEZ Logo" style="max-width: 200px;">
+                            {% else %}
+                                <h1 style="color: #ffffff; margin: 0; font-size: 24px;">AssessEEZ</h1>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 30px;">
+                            <h2 style="color: #004085; font-size: 20px; margin-top: 0;">New Notification</h2>
+                            <p style="font-size: 16px; color: #333333; line-height: 1.6;">Dear {{ learner_name }},</p>
+                            <p style="font-size: 16px; color: #333333; line-height: 1.6;">
+                                You have a new notification from {{ business_name }}.
+                            </p>
+                            <table width="100%" cellpadding="10" cellspacing="0" style="border: 1px solid #e0e0e0; background-color: #f9f9f9; margin: 20px 0;">
+                                <tr>
+                                    <td style="font-size: 16px; color: #333333;">
+                                        <strong>Notification:</strong> {{ notification_message }}<br>
+                                        <strong>Date:</strong> {{ notification_date }}
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="font-size: 16px; color: #333333; line-height: 1.6;">
+                                Please <a href="{{ login_url }}" style="color: #004085; text-decoration: none; font-weight: bold;">login</a> to view your notifications.
+                            </p>
+                        </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 20px; background-color: #f8f9fa; text-align: center; border-top: 1px solid #e0e0e0;">
+                            <p style="font-size: 14px; color: #666666; margin: 0; line-height: 1.5;">
+                                If you have any questions, please contact our support team at <a href="mailto:{{ support_email }}" style="color: #004085; text-decoration: none;">{{ support_email }}</a>.
+                            </p>
+                            <p style="font-size: 14px; color: #666666; margin: 5px 0 0; line-height: 1.5;">
+                                &copy; {{ 'now'|date:'Y' }} AssessEEZ. All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

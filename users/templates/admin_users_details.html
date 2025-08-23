@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static user_filters %}
+
+{% block title %}User Details - {{ role|title }} - {{ period|title }} - AssessEEZ{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'users:business_details' business.business_id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Business Details</a>
+    <form method="post" action="{% url 'users:custom_logout' %}" class="inline">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white">Logout</button>
+    </form>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-8 px-4 flex-grow">
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- User Details -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ role|title }} Registrations for {{ business.name }} ({{ period|title }})</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Name</th>
+                        <th class="py-3 px-6 text-left">Email ID</th>
+                        <th class="py-3 px-6 text-left">Date of Registration</th>
+                        <th class="py-3 px-6 text-left">Qualification Title</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm">
+                    {% for user in users %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6">{{ user.name|default:"N/A" }}</td>
+                        <td class="py-3 px-6">{{ user.email }}</td>
+                        <td class="py-3 px-6">{{ user.created_at|date:"d-M-Y" }}</td>
+                        <td class="py-3 px-6">
+                            {% if user.qualification_title %}
+                            <ul class="list-disc pl-4">
+                                {% for title in user.qualification_title|split:"," %}
+                                <li>{{ title|trim }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="py-3 px-6 text-gray-500">No {{ role }} registrations found for this period.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

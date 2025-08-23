@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Learner Evidence{% endblock %}
+
+{% block nav_items %}
+    {% if is_admin %}
+    <a href="{% url 'users:admin_dashboard' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Dashboard</a>
+    {% else %}
+    <a href="{% url 'qualifications:user_dashboard' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Dashboard</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Evidence Submissions for {{ learner_name }} - {{ qualification.qualification_title }}</h1>
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Assessment Criterion: {{ assessment_criterion.ac_detail }}</h2>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-6 space-y-2">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Workbook Submissions -->
+        <div class="mt-4 mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Workbook for Learning Outcome: {{ assessment_criterion.learning_outcome.lo_detail }}</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Uploaded Workbook</th>
+                            <th class="py-3 px-6 text-left">Date Uploaded</th>
+                            <th class="py-3 px-6 text-left">Status</th>
+                            <th class="py-3 px-6 text-left">Assessed by</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm">
+                        {% for workbook in workbooks %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-100 {% if workbook.status == 'SUBMITTED' %}bg-yellow-100{% elif workbook.status == 'ACCEPTED' %}bg-green-100{% elif workbook.status == 'Resubmission Required' %}bg-red-100{% endif %}">
+                            <td class="py-3 px-6">
+                                {% if workbook.file_url %}
+                                <a href="{{ workbook.file_url }}" class="text-blue-600 hover:underline" target="_blank">View Workbook</a>
+                                {% else %}
+                                <span class="text-gray-500">No file</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-6">{{ workbook.submitted_at|date:"Y-m-d H:i" }}</td>
+                            <td class="py-3 px-6">{{ workbook.status }}</td>
+                            <td class="py-3 px-6">{{ workbook.assessor_name }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="py-3 px-6 text-center text-gray-500">No workbook submissions for this learning outcome.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Evidence Submissions -->
+        <div class="mt-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Evidence Submissions</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Uploaded Evidence</th>
+                            <th class="py-3 px-6 text-left">Date Uploaded</th>
+                            <th class="py-3 px-6 text-left">Evidence Details</th>
+                            <th class="py-3 px-6 text-left">Status</th>
+                            <th class="py-3 px-6 text-left">Assessed by</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm">
+                        {% for submission in submissions %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-100 {% if submission.status == 'SUBMITTED' %}bg-yellow-100{% elif submission.status == 'ACCEPTED' %}bg-green-100{% elif submission.status == 'Resubmission Required' %}bg-red-100{% endif %}">
+                            <td class="py-3 px-6">
+                                {% if submission.file_urls %}
+                                {% for file_url in submission.file_urls %}
+                                <a href="{{ file_url }}" class="text-blue-600 hover:underline" target="_blank">View File {{ forloop.counter }}</a><br>
+                                {% endfor %}
+                                {% else %}
+                                <span class="text-gray-500">No files</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-6">{{ submission.submitted_at|date:"Y-m-d H:i" }}</td>
+                            <td class="py-3 px-6">{{ submission.evidence_detail }}</td>
+                            <td class="py-3 px-6">{{ submission.status }}</td>
+                            <td class="py-3 px-6">{{ submission.assessor_name }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="py-3 px-6 text-center text-gray-500">No evidence submissions for this assessment criterion.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="mt-6 flex justify-between">
+            <button type="button" onclick="window.history.back()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

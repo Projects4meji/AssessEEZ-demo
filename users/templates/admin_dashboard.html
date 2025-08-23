@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - {{ business.name }}{% endblock %}
+
+{% block nav_title %}Admin Dashboard{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'qualifications:iqa_feedback_to_assessor_records' %}" class="bg-purple-500 hover:bg-purple-600 px-4 py-2 rounded text-white">IQA Feedback Records</a>
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto mt-8 px-4">
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Tabs -->
+        <div class="bg-white rounded-lg shadow-md mb-8">
+            <div class="border-b">
+                <nav class="flex -mb-px">
+                    <a href="#qualifications" class="tab-link w-1/3 py-4 px-1 text-center border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="qualifications">Qualifications</a>
+                    <a href="#users" class="tab-link w-1/3 py-4 px-1 text-center border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="users">Users</a>
+                    <a href="#resources" class="tab-link w-1/3 py-4 px-1 text-center border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="resources">Resources</a>
+                </nav>
+            </div>
+            <!-- Qualifications Tab -->
+            <div id="qualifications" class="tab-content p-6 hidden">
+                <h2 class="text-2xl font-semibold mb-4">Qualification Actions</h2>
+                <div class="flex space-x-4">
+                    <a href="{% url 'qualifications:qualification-list' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">View Qualifications</a>
+                </div>
+            </div>
+            <!-- Users Tab -->
+            <div id="users" class="tab-content p-6 hidden">
+                <h2 class="text-2xl font-semibold mb-4">Learners</h2>
+                <div class="flex space-x-4 mb-4">
+                    <a href="{% url 'qualifications:add_user' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add User</a>
+                    <a href="{% url 'qualifications:current_users' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Current Users</a>
+                    <a href="{% url 'qualifications:edit_user_search' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Edit User</a>
+                </div>
+                <!-- Search Bar -->
+                <div class="mb-4">
+                    <input type="text" id="learnerSearch" placeholder="Search by Name or Qualification..." class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                {% if learners %}
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border" id="learnersTable">
+                            <thead>
+                                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                                    <th class="py-3 px-6 text-left sort-header cursor-pointer hover:bg-gray-300" data-sort-key="full_name">Full Name <span class="sort-indicator"></span></th>
+                                    <th class="py-3 px-6 text-left sort-header cursor-pointer hover:bg-gray-300" data-sort-key="qualification">Qualification <span class="sort-indicator"></span></th>
+                                    <th class="py-3 px-6 text-left sort-header cursor-pointer hover:bg-gray-300" data-sort-key="assessor">Assessor <span class="sort-indicator"></span></th>
+                                    <th class="py-3 px-6 text-left sort-header cursor-pointer hover:bg-gray-300" data-sort-key="iqa">IQA <span class="sort-indicator"></span></th>
+                                    <th class="py-3 px-6 text-left sort-header cursor-pointer hover:bg-gray-300" data-sort-key="progress">Progress % <span class="sort-indicator"></span></th>
+                                    <th class="py-3 px-6 text-left">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 text-sm">
+                                {% for learner in learners %}
+                                    <tr class="border-b border-gray-200 hover:bg-gray-100 learner-row" 
+                                        data-name="{{ learner.full_name|lower }}" 
+                                        data-qualification="{{ learner.qualification_title|lower }}"
+                                        data-full-name="{{ learner.full_name|lower }}"
+                                        data-qualification-value="{{ learner.qualification_title|lower }}"
+                                        data-assessor="{{ learner.assessor_name|lower }}"
+                                        data-iqa="{{ learner.iqa_name|lower }}"
+                                        data-progress="{{ learner.progress }}"
+                                        data-date-of-registration="{{ learner.date_of_registration }}"
+                                        data-created-at="{{ learner.created_at }}">
+                                        <td class="py-3 px-6">{{ learner.full_name }}</td>
+                                        <td class="py-3 px-6">{{ learner.qualification_title }}</td>
+                                        <td class="py-3 px-6">{{ learner.assessor_name }}</td>
+                                        <td class="py-3 px-6">{{ learner.iqa_name }}</td>
+                                        <td class="py-3 px-6">
+                                            <div class="flex items-center">
+                                                <span class="mr-2">{{ learner.progress }}%</span>
+                                                <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ learner.progress }}%"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-6 flex space-x-2">
+                                            <a href="{% url 'qualifications:eqa_view' learner.qualification_id learner.learner_id %}" 
+                                               class="text-blue-600 hover:underline">View</a>
+                                            <button class="delete-button px-3 py-1 rounded text-white bg-red-600 hover:bg-red-700 text-xs font-medium"
+                                                    data-learner-id="{{ learner.learner_id }}"
+                                                    data-qualification-id="{{ learner.qualification_id }}"
+                                                    data-qualification-title="{{ learner.qualification_title }}">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-gray-500">No learners found for this business.</p>
+                {% endif %}
+            </div>
+            <!-- Resources Tab -->
+            <div id="resources" class="tab-content p-6 hidden">
+                <h2 class="text-2xl font-semibold mb-4">Resources</h2>
+                <div class="flex space-x-4">
+                    <a href="{% url 'qualifications:resources' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">View Resources</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Details -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Business Details</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p><strong>Name:</strong> {{ business.name }}</p>
+                    <p><strong>Business ID:</strong> {{ business.business_id }}</p>
+                </div>
+                <div>
+                    <p><strong>Address:</strong> {{ business.address }}</p>
+                    {% if business.website %}
+                        <p><strong>Website:</strong> <a href="{{ business.website }}" class="text-blue-600 hover:underline" target="_blank">{{ business.website }}</a></p>
+                    {% else %}
+                        <p><strong>Website:</strong> Not provided</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{% url 'users:add_logo' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add Logo</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $(document).ready(function() {
+            // Tab navigation
+            $('.tab-link').on('click', function(e) {
+                e.preventDefault();
+                const tab = $(this).data('tab');
+                console.log(`Switching to tab: ${tab}`);
+                $('.tab-link').removeClass('border-indigo-500 text-indigo-600').addClass('border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300');
+                $(this).addClass('border-indigo-500 text-indigo-600').removeClass('border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300');
+                $('.tab-content').addClass('hidden');
+                $(`#${tab}`).removeClass('hidden');
+            });
+            $('.tab-link').first().trigger('click'); // Open Qualifications tab by default
+
+            // Search bar filtering
+            $('#learnerSearch').on('input', function() {
+                const query = $(this).val().toLowerCase();
+                console.log(`Search query: ${query}`);
+                $('#learnersTable .learner-row').each(function() {
+                    const name = $(this).data('name');
+                    const qualification = $(this).data('qualification');
+                    const isMatch = name.includes(query) || qualification.includes(query);
+                    $(this).toggle(isMatch);
+                });
+            });
+
+            // Sorting functionality
+            let currentSortKey = 'date_of_registration';
+            let currentSortDirection = 'desc'; // Default: newest first
+
+            function sortTable(key, direction) {
+                const rows = $('#learnersTable tbody tr').get();
+                rows.sort(function(a, b) {
+                    let aValue, bValue;
+
+                    // Special handling for date_of_registration with fallback to created_at
+                    if (key === 'date_of_registration') {
+                        aValue = $(a).data('date-of-registration') || $(a).data('created-at');
+                        bValue = $(b).data('date-of-registration') || $(b).data('created-at');
+                        aValue = aValue ? new Date(aValue) : new Date(0);
+                        bValue = bValue ? new Date(bValue) : new Date(0);
+                    }
+                    // Handle progress as numbers
+                    else if (key === 'progress') {
+                        aValue = parseFloat($(a).data('progress')) || 0;
+                        bValue = parseFloat($(b).data('progress')) || 0;
+                    }
+                    // Handle strings (case-insensitive)
+                    else {
+                        aValue = $(a).data(key).toLowerCase();
+                        bValue = $(b).data(key).toLowerCase();
+                    }
+
+                    if (aValue < bValue) return direction === 'asc' ? -1 : 1;
+                    if (aValue > bValue) return direction === 'asc' ? 1 : -1;
+                    return 0;
+                });
+
+                $('#learnersTable tbody').empty().append(rows);
+
+                // Update sort indicators
+                $('.sort-indicator').text('');
+                $(`.sort-header[data-sort-key="${key}"] .sort-indicator`).text(direction === 'asc' ? '↑' : '↓');
+            }
+
+            // Initial sort by date_of_registration (descending)
+            sortTable('date_of_registration', 'desc');
+
+            // Sort header click handler
+            $('.sort-header').on('click', function() {
+                const key = $(this).data('sort-key');
+                let direction = 'asc';
+                if (currentSortKey === key) {
+                    direction = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                }
+                currentSortKey = key;
+                currentSortDirection = direction;
+                sortTable(key, direction);
+            });
+
+            // Delete button handler
+            $('.delete-button').on('click', function() {
+                const button = $(this);
+                const learnerId = button.data('learner-id');
+                const qualificationId = button.data('qualification-id');
+                const qualificationTitle = button.data('qualification-title');
+
+                if (confirm(`Deleting the learner will delete all their submissions and associated assessment records for "${qualificationTitle}". Are you sure you want to delete?`)) {
+                    $.ajax({
+                        url: '{% url 'qualifications:delete_learner_qualification' %}',
+                        type: 'POST',
+                        data: {
+                            learner_id: learnerId,
+                            qualification_id: qualificationId,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                button.closest('tr').remove();
+                                alert(response.message);
+                                if ($('#learnersTable tbody tr').length === 0) {
+                                    window.location.reload();
+                                }
+                            } else {
+                                alert('Error: ' + response.error);
+                            }
+                        },
+                        error: function() {
+                            alert('An error occurred while deleting the learner.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

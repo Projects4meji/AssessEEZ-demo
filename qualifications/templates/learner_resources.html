@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Qualification Resources - {{ qualification.qualification_title }}{% endblock %}
+
+
+{% block nav_items %}
+    {% if role == 'learner' %}
+    <a href="{% url 'qualifications:learner_view' qualification.id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Learner View</a>
+    {% elif role == 'assessor' %}
+    <a href="{% url 'qualifications:assessor_view' qualification.id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Assessor View</a>
+    {% elif role == 'iqa' %}
+    <a href="{% url 'qualifications:iqa_view' qualification.id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to IQA View</a>
+    {% elif role == 'eqa' %}
+    <a href="{% url 'qualifications:eqa_learner_list' qualification.id %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to EQA View</a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Qualification Resources - {{ qualification.qualification_title }}</h2>
+    {% if folders %}
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Folders</h3>
+        <div class="space-y-4">
+            {% for folder in folders %}
+            <div class="bg-white rounded-lg shadow-md">
+                <button type="button" class="w-full text-left p-4 flex justify-between items-center text-gray-700 hover:bg-gray-100 focus:outline-none" onclick="toggleFolder('folder-{{ folder.id }}')">
+                    <span class="font-medium">{{ folder.name }}</span>
+                    <svg id="icon-{{ folder.id }}" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="folder-{{ folder.id }}" class="hidden px-4 pb-4">
+                    {% with files=folder.files.all %}
+                    {% if files %}
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border mt-4">
+                            <thead>
+                                <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                                    <th class="py-3 px-6 text-left">Title</th>
+                                    <th class="py-3 px-6 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 text-sm">
+                                {% for file in files %}
+                                <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                    <td class="py-3 px-6">{{ file.title }}</td>
+                                    <td class="py-3 px-6 text-right">
+                                        <a href="{{ file.file.url }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">View</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-gray-500 mt-4">No files in this folder.</p>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <p class="text-gray-500">No folders available for this qualification.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleFolder(folderId) {
+        const content = document.getElementById(folderId);
+        const icon = document.getElementById(`icon-${folderId.split('-')[1]}`);
+        content.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+    }
+</script>
+{% endblock %}

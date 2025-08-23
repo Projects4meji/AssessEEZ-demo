@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static qualifications_filters %}
+
+{% block title %}EQA Dashboard - {{ qualification.qualification_title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Qualification and Institute Details -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ qualification.qualification_title }} ({{ qualification.qualification_number }})</h2>
+        <p class="text-gray-600 mb-2"><strong>Institute:</strong> {{ business.name }} (ID: {{ business.business_id }})</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Filter Form -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Filter Learners</h3>
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label for="assessor" class="block text-sm font-medium text-gray-700">Assessor</label>
+                <select name="assessor" id="assessor" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                    <option value="all" {% if not selected_assessor %}selected{% endif %}>All Assessors</option>
+                    {% for assessor in assessors %}
+                    <option value="{{ assessor.id }}" {% if selected_assessor == assessor.id|stringformat:"s" %}selected{% endif %}>
+                        {{ assessor.user.full_name|default:assessor.user.email }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="progress_min" class="block text-sm font-medium text-gray-700">Progress Min (%)</label>
+                <input type="number" name="progress_min" id="progress_min" value="{{ progress_min }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm" min="0" max="100">
+            </div>
+            <div>
+                <label for="progress_max" class="block text-sm font-medium text-gray-700">Progress Max (%)</label>
+                <input type="number" name="progress_max" id="progress_max" value="{{ progress_max }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm" min="0" max="100">
+            </div>
+            <div class="md:col-span-3">
+                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                    Apply Filters
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Learners List -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Assigned Learners</h2>
+        {% if learners %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Learner Name</th>
+                        <th class="py-3 px-6 text-left">Progress (%)</th>
+                        <th class="py-3 px-6 text-left">IQA Sampling Ratio (%)</th>
+                        <th class="py-3 px-6 text-left">Assessor</th>
+                        <th class="py-3 px-6 text-left">IQA</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm">
+                    {% for learner in learners %}
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6">
+                            <a href="{% url 'qualifications:eqa_view' qualification.id learner.learner_id %}" class="text-blue-600 hover:underline">
+                                {{ learner.name }}
+                            </a>
+                        </td>
+                        <td class="py-3 px-6">
+                            <div class="flex items-center">
+                                <div class="w-24 bg-gray-200 rounded-full h-2.5 mr-2">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ learner.progress }}%"></div>
+                                </div>
+                                {{ learner.progress|floatformat:2 }}%
+                            </div>
+                        </td>
+                        <td class="py-3 px-6">
+                            <div class="flex items-center">
+                                <div class="w-24 bg-gray-200 rounded-full h-2.5 mr-2">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ learner.sampling_ratio }}%"></div>
+                                </div>
+                                {{ learner.sampling_ratio|floatformat:2 }}%
+                            </div>
+                        </td>
+                        <td class="py-3 px-6">{{ learner.assessor_name|default:"None" }}</td>
+                        <td class="py-3 px-6">{{ learner.iqa_name|default:"None" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-gray-500">No learners assigned to you for this qualification.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

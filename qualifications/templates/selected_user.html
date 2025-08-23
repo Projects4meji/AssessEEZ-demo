@@ -1,0 +1,415 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Selected User{% endblock %}
+
+{% block nav_items %}
+    <a href="{% url 'qualifications:current_users' %}" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white">Back to Current Users</a>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6 max-w-7xl">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <!-- Display Messages -->
+        {% if messages %}
+        <div class="mb-6 space-y-2">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- User Details -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">User Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <p class="text-gray-600"><strong>Name:</strong> {{ name|default:user.full_name }}</p>
+                <p class="text-gray-600"><strong>Email ID:</strong> {{ email|default:user.email }}</p>
+                <p class="text-gray-600"><strong>Selected Role Type:</strong> {{ role_type|title }}</p>
+            </div>
+        </div>
+
+        <!-- Qualifications and Roles -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Qualifications and Roles</h2>
+            {% if qualifications_with_roles or qualifications %}
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse border border-gray-200 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-700 text-sm font-semibold uppercase">
+                            <th class="border border-gray-200 p-3 text-left">Qualification</th>
+                            <th class="border border-gray-200 p-3 text-left">Assigned Assessor</th>
+                            <th class="border border-gray-200 p-3 text-left">Assigned IQA</th>
+                            <th class="border border-gray-200 p-3 text-left">Role</th>
+                            <th class="border border-gray-200 p-3 text-left">Assigned Learners</th>
+                            <th class="border border-gray-200 p-3 text-left">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm">
+                        {% for item in qualifications_with_roles|default:qualifications %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="border border-gray-200 p-3">{{ item.qualification }}</td>
+                            <td class="border border-gray-200 p-3">
+                                {{ item.assessor_name|default:"None" }}
+                                {% if role_type == 'learner' %}
+                                <button class="change-assessor-button px-3 py-1 rounded text-white bg-blue-600 hover:bg-blue-700 text-xs font-medium ml-2"
+                                        data-learner-id="{{ item.learner_id }}"
+                                        data-qualification-id="{{ item.qualification_id }}"
+                                        data-qualification-title="{{ item.qualification }}">
+                                    Change
+                                </button>
+                                {% endif %}
+                            </td>
+                            <td class="border border-gray-200 p-3">
+                                {{ item.iqa_name|default:"None" }}
+                                {% if role_type == 'learner' %}
+                                <button class="change-iqa-button px-3 py-1 rounded text-white bg-blue-600 hover:bg-blue-700 text-xs font-medium ml-2"
+                                        data-learner-id="{{ item.learner_id }}"
+                                        data-qualification-id="{{ item.qualification_id }}"
+                                        data-qualification-title="{{ item.qualification }}">
+                                    Change
+                                </button>
+                                {% endif %}
+                            </td>
+                            <td class="border border-gray-200 p-3">{{ item.role }}</td>
+                            <td class="border border-gray-200 p-3">
+                                {% if role_type == 'learner' %}
+                                N/A
+                                {% else %}
+                                <a href="{% url 'qualifications:learners_list' user_business_id=user_business.id role_type=role_type qualification_id=item.qualification_id %}" 
+                                   class="text-blue-600 hover:text-blue-800 font-medium">
+                                    {{ item.learner_count }}
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td class="border border-gray-200 p-3">
+                                {% if role_type == 'learner' %}
+                                <button class="delete-button px-3 py-1 rounded text-white bg-red-600 hover:bg-red-700 text-xs font-medium"
+                                        data-learner-id="{{ item.learner_id }}"
+                                        data-qualification-id="{{ item.qualification_id }}"
+                                        data-qualification-title="{{ item.qualification }}">
+                                    Delete
+                                </button>
+                                {% else %}
+                                <button class="remove-button px-3 py-1 rounded text-white bg-red-600 hover:bg-red-700 text-xs font-medium"
+                                        data-record-id="{{ item.record_id }}"
+                                        data-role-type="{{ role_type }}"
+                                        data-qualification-title="{{ item.qualification }}">
+                                    Remove
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="border border-gray-200 p-3 text-center text-gray-500">No qualifications assigned to this user.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-gray-600 text-center mt-4 text-sm">No qualifications assigned to this user.</p>
+            {% endif %}
+        </div>
+
+        <!-- Back Button -->
+        <div class="text-center mt-6">
+            <a href="{% url 'qualifications:current_users' %}" 
+               class="inline-flex justify-center py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded text-sm">
+                Back to Current Users
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal for Changing Assessor -->
+    <div id="assessor-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Change Assessor for <span id="assessor-qual-title"></span></h3>
+            <form id="assessor-form">
+                <input type="hidden" name="learner_id" id="assessor-learner-id">
+                <input type="hidden" name="qualification_id" id="assessor-qualification-id">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Select Assessor</label>
+                    <select name="assessor_id" id="assessor-select" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <option value="">Select an assessor</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" id="assessor-cancel" class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 text-gray-800 text-sm">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Changing IQA -->
+    <div id="iqa-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Change IQA for <span id="iqa-qual-title"></span></h3>
+            <form id="iqa-form">
+                <input type="hidden" name="learner_id" id="iqa-learner-id">
+                <input type="hidden" name="qualification_id" id="iqa-qualification-id">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Select IQA</label>
+                    <select name="iqa_id" id="iqa-select" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <option value="">Select an IQA</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" id="iqa-cancel" class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 text-gray-800 text-sm">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Toggle learner access (not present in original but preserved for potential use)
+    $('.toggle-button').on('click', function() {
+        const button = $(this);
+        const learnerId = button.data('learner-id');
+        const isActive = button.data('active') === 'true';
+
+        $.ajax({
+            url: '{% url 'qualifications:toggle_learner_access' %}',
+            type: 'POST',
+            data: {
+                learner_id: learnerId,
+                is_active: !isActive,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    if (isActive) {
+                        button.removeClass('bg-green-500 hover:bg-green-600').addClass('bg-red-500 hover:bg-red-600');
+                        button.text('Deactivated');
+                    } else {
+                        button.removeClass('bg-red-500 hover:bg-red-600').addClass('bg-green-500 hover:bg-green-600');
+                        button.text('Activated');
+                    }
+                    button.data('active', !isActive ? 'true' : 'false');
+                    alert('Learner access updated successfully.');
+                } else {
+                    alert('Error: ' + response.error);
+                }
+            },
+            error: function() {
+                alert('An error occurred while updating access.');
+            }
+        });
+    });
+
+    // Delete learner qualification
+    $('.delete-button').on('click', function() {
+        const button = $(this);
+        const learnerId = button.data('learner-id');
+        const qualificationId = button.data('qualification-id');
+        const qualificationTitle = button.data('qualification-title');
+
+        if (confirm(`Are you sure you want to delete this Learner for "${qualificationTitle}"? This is an irreversible action and will delete all submissions and related records for this learner against this qualification.`)) {
+            $.ajax({
+                url: '{% url 'qualifications:delete_learner_qualification' %}',
+                type: 'POST',
+                data: {
+                    learner_id: learnerId,
+                    qualification_id: qualificationId,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        button.closest('tr').remove();
+                        alert(response.message);
+                        if ($('table tbody tr').length === 0) {
+                            window.location.reload();
+                        }
+                    } else {
+                        alert('Error: ' + response.error);
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while deleting the learner.');
+                }
+            });
+        }
+    });
+
+    // Remove role qualification
+    $('.remove-button').on('click', function() {
+        const button = $(this);
+        const recordId = button.data('record-id');
+        const roleType = button.data('role-type');
+        const qualificationTitle = button.data('qualification-title');
+
+        if (confirm(`Are you sure you want to remove this ${roleType.charAt(0).toUpperCase() + roleType.slice(1)} role for "${qualificationTitle}"?`)) {
+            $.ajax({
+                url: '{% url 'qualifications:remove_role_qualification' %}',
+                type: 'POST',
+                data: {
+                    record_id: recordId,
+                    role_type: roleType,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        button.closest('tr').remove();
+                        alert(response.message || `${roleType.charAt(0).toUpperCase() + roleType.slice(1)} role removed successfully.`);
+                        if ($('table tbody tr').length === 0) {
+                            window.location.reload();
+                        }
+                    } else {
+                        alert('Error: ' + (response.error || 'Failed to remove role.'));
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while removing the role.');
+                }
+            });
+        }
+    });
+
+    // Change assessor modal
+    $('.change-assessor-button').on('click', function() {
+        const button = $(this);
+        const learnerId = button.data('learner-id');
+        const qualificationId = button.data('qualification-id');
+        const qualificationTitle = button.data('qualification-title');
+
+        $('#assessor-learner-id').val(learnerId);
+        $('#assessor-qualification-id').val(qualificationId);
+        $('#assessor-qual-title').text(qualificationTitle);
+
+        $.ajax({
+            url: '{% url 'qualifications:get_assessors' %}',
+            type: 'GET',
+            data: { qualification: qualificationId },
+            success: function(response) {
+                const select = $('#assessor-select');
+                select.empty();
+                select.append('<option value="">Select an assessor</option>');
+                response.assessors.forEach(function(assessor) {
+                    select.append(`<option value="${assessor.id}">${assessor.name}</option>`);
+                });
+                $('#assessor-modal').removeClass('hidden');
+            },
+            error: function() {
+                alert('Failed to load assessors.');
+            }
+        });
+    });
+
+    // Change IQA modal
+    $('.change-iqa-button').on('click', function() {
+        const button = $(this);
+        const learnerId = button.data('learner-id');
+        const qualificationId = button.data('qualification-id');
+        const qualificationTitle = button.data('qualification-title');
+
+        $('#iqa-learner-id').val(learnerId);
+        $('#iqa-qualification-id').val(qualificationId);
+        $('#iqa-qual-title').text(qualificationTitle);
+
+        $.ajax({
+            url: '{% url 'qualifications:get_iqas' %}',
+            type: 'GET',
+            data: { qualification: qualificationId },
+            success: function(response) {
+                const select = $('#iqa-select');
+                select.empty();
+                select.append('<option value="">Select an IQA</option>');
+                response.iqas.forEach(function(iqa) {
+                    select.append(`<option value="${iqa.id}">${iqa.name}</option>`);
+                });
+                $('#iqa-modal').removeClass('hidden');
+            },
+            error: function() {
+                alert('Failed to load IQAs.');
+            }
+        });
+    });
+
+    // Cancel modal buttons
+    $('#assessor-cancel, #iqa-cancel').on('click', function() {
+        $('#assessor-modal, #iqa-modal').addClass('hidden');
+    });
+
+    // Submit assessor form
+    $('#assessor-form').on('submit', function(e) {
+        e.preventDefault();
+        const learnerId = $('#assessor-learner-id').val();
+        const qualificationId = $('#assessor-qualification-id').val();
+        const assessorId = $('#assessor-select').val();
+
+        if (!assessorId) {
+            alert('Please select an assessor.');
+            return;
+        }
+
+        $.ajax({
+            url: '{% url 'qualifications:change_learner_assessor' %}',
+            type: 'POST',
+            data: {
+                learner_id: learnerId,
+                qualification_id: qualificationId,
+                assessor_id: assessorId,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('Assessor updated successfully.');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + response.error);
+                }
+            },
+            error: function() {
+                alert('An error occurred while updating the assessor.');
+            }
+        });
+    });
+
+    // Submit IQA form
+    $('#iqa-form').on('submit', function(e) {
+        e.preventDefault();
+        const learnerId = $('#iqa-learner-id').val();
+        const qualificationId = $('#iqa-qualification-id').val();
+        const iqaId = $('#iqa-select').val();
+
+        if (!iqaId) {
+            alert('Please select an IQA.');
+            return;
+        }
+
+        $.ajax({
+            url: '{% url 'qualifications:change_learner_iqa' %}',
+            type: 'POST',
+            data: {
+                learner_id: learnerId,
+                qualification_id: qualificationId,
+                iqa_id: iqaId,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert('IQA updated successfully.');
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + response.error);
+                }
+            },
+            error: function() {
+                alert('An error occurred while updating the IQA.');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
