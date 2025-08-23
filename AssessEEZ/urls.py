@@ -8,8 +8,13 @@ from users.views import (
     pricing_view, privacy_policy_view, user_agreement_view, faq_view
 )
 from django.views.generic import TemplateView
+from django.http import HttpResponse
+
+def health_check(request):
+    return HttpResponse("OK", content_type="text/plain")
 
 urlpatterns = [
+    path('health/', health_check, name='health_check'),
     path('admin/', admin.site.urls),
     path('users/', include(('users.urls', 'users'), namespace='users')),
     path('qualifications/', include(('qualifications.urls', 'qualifications'), namespace='qualifications')),
