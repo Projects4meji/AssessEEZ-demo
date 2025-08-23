@@ -41,6 +41,13 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 try:
     ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
+    # Add Railway-specific domains automatically
+    if '.railway.app' in str(ALLOWED_HOSTS):
+        ALLOWED_HOSTS.extend([
+            'web-production-af2b9.up.railway.app',
+            'assesseez-demo-production.up.railway.app',
+            'assesseez-demo.up.railway.app'
+        ])
 except:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app', '.render.com', '.herokuapp.com', '*']
 
