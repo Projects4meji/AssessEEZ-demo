@@ -33,10 +33,6 @@ ls -la staticfiles/
 echo "Static directory contents:"
 ls -la static/
 
-# Check for potential duplicate files
-echo "Checking for potential duplicate files..."
-find static -name "*.js" -o -name "*.css" | sort | uniq -d
-
 # Collect static files with verbose output
 echo "Collecting static files..."
 python manage.py collectstatic --noinput --verbosity=2 --clear
