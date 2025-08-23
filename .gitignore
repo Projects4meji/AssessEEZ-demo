@@ -134,6 +134,11 @@ media/
 *.sqlite3
 *.db
 
+# Production
+.env
+.env.local
+.env.production
+
 # IDE specific
 .vscode/
 .idea/

@@ -37,12 +37,12 @@ try:
 except:
     SECRET_KEY = 'django-insecure-your-secret-key-here-change-this-in-production'
 
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 try:
     ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 except:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.railway.app', '.render.com', '.herokuapp.com']
 
 # Application definition
 INSTALLED_APPS = [
@@ -145,7 +145,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-STATIC_ROOT = '/var/www/assessments/staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576000
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576000
