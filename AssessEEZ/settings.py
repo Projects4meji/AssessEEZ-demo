@@ -143,10 +143,15 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Debug static files configuration
+print(f"DEBUG: STATIC_ROOT = {STATIC_ROOT}")
+print(f"DEBUG: STATICFILES_DIRS = {STATICFILES_DIRS}")
+print(f"DEBUG: BASE_DIR = {BASE_DIR}")
+
 # Add whitenoise for static file serving in production
 if not DEBUG:
     MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576000
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576000
