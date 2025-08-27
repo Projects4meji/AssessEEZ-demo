@@ -200,6 +200,477 @@
             opacity: 1 !important;
         }
         
+        /* Mobile Menu Button Styling */
+        .mobile-menu-btn {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            width: 35px !important;
+            height: 30px !important;
+            cursor: pointer !important;
+            z-index: 1000 !important;
+            background: transparent !important;
+            border: none !important;
+            padding: 4px !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        /* Force hide on large screens */
+        @media (min-width: 1024px) {
+            .mobile-menu-btn {
+                display: none !important;
+            }
+        }
+        
+        /* Force show on small screens */
+        @media (max-width: 1023px) {
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+        }
+        
+        .mobile-menu-btn:hover {
+            transform: scale(1.05) !important;
+        }
+        
+        /* Add subtle bounce effect when clicked */
+        .mobile-menu-btn:active {
+            transform: scale(0.95) !important; /* Slight scale down when clicked */
+            transition: transform 0.1s ease !important; /* Quick response */
+        }
+        
+        .mobile-menu-btn span {
+            display: block !important;
+            width: 100% !important;
+            height: 4px !important;
+            background: #ffffff !important;
+            border-radius: 2px !important;
+            transition: all 0.3s ease !important;
+            transform-origin: center !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)) !important;
+        }
+        
+        .mobile-menu-btn:hover span {
+            background: #fbbf24 !important;
+            box-shadow: 0 2px 6px rgba(251, 191, 36, 0.6) !important;
+        }
+        
+        /* Active state for hamburger button */
+        .mobile-menu-btn.active span {
+            background: #fbbf24 !important;
+        }
+        
+        /* Mobile Navigation Styling */
+        .nav-links {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 50%, #1e293b 100%) !important;
+            backdrop-filter: blur(10px) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+            z-index: 9999 !important;
+            max-height: 0 !important;
+            overflow: hidden !important;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Smooth easing */
+            padding: 0 !important;
+            opacity: 0 !important; /* Start transparent */
+            transform: translateY(-10px) !important; /* Start slightly up */
+            will-change: transform, opacity, max-height !important; /* Optimize animations */
+        }
+        
+        /* Force hide mobile navigation on large screens */
+        @media (min-width: 1024px) {
+            .nav-links {
+                display: none !important;
+            }
+        }
+        
+        /* Ensure mobile navigation is visible on small screens */
+        @media (max-width: 1023px) {
+            .nav-links {
+                display: block !important;
+            }
+        }
+        
+        /* Mobile menu states */
+        .nav-links.hidden {
+            max-height: 0 !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(-10px) !important;
+            padding: 0 !important;
+        }
+        
+        .nav-links.active {
+            max-height: 800px !important; /* Increased height for dropdowns */
+            padding: 1rem 0 !important;
+            opacity: 1 !important; /* Fade in */
+            transform: translateY(0) !important; /* Move to normal position */
+            visibility: visible !important;
+        }
+        
+        /* Debug: Make sure menu is visible when active */
+        .nav-links.active {
+            display: block !important;
+        }
+        
+        /* Reset main menu items when menu is hidden */
+        .nav-links.hidden a,
+        .nav-links.hidden .mobile-dropdown,
+        .nav-links.hidden .login-btn {
+            opacity: 0 !important; /* Reset to transparent */
+            transform: translateY(20px) !important; /* Reset to below position */
+            transition-delay: 0s !important; /* No delay when hiding */
+        }
+        
+        /* Ensure mobile menu items are properly spaced */
+        .nav-links .px-4 {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+        
+        .nav-links .space-y-4 > * + * {
+            margin-top: 1rem !important;
+        }
+        
+        /* Animate main menu items when menu opens */
+        .nav-links a,
+        .nav-links .mobile-dropdown,
+        .nav-links .login-btn {
+            opacity: 0 !important; /* Start transparent */
+            transform: translateY(20px) !important; /* Start below normal position */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Smooth easing */
+        }
+        
+        /* Show main menu items when menu is active */
+        .nav-links.active a,
+        .nav-links.active .mobile-dropdown,
+        .nav-links.active .login-btn {
+            opacity: 1 !important; /* Fade in */
+            transform: translateY(0) !important; /* Move to normal position */
+        }
+        
+        /* Staggered animation for main menu items */
+        .nav-links.active a:nth-child(1),
+        .nav-links.active .mobile-dropdown:nth-child(2),
+        .nav-links.active a:nth-child(4),
+        .nav-links.active .mobile-dropdown:nth-child(6),
+        .nav-links.active a:nth-child(8),
+        .nav-links.active .login-btn:nth-child(10) {
+            transition-delay: 0.1s !important;
+        }
+        
+        .nav-links.active a:nth-child(2),
+        .nav-links.active .mobile-dropdown:nth-child(3),
+        .nav-links.active a:nth-child(5),
+        .nav-links.active .mobile-dropdown:nth-child(7),
+        .nav-links.active a:nth-child(9),
+        .nav-links.active .login-btn:nth-child(11) {
+            transition-delay: 0.2s !important;
+        }
+        
+        .nav-links.active a:nth-child(3),
+        .nav-links.active .mobile-dropdown:nth-child(4),
+        .nav-links.active a:nth-child(6),
+        .nav-links.active .mobile-dropdown:nth-child(8),
+        .nav-links.active a:nth-child(10),
+        .nav-links.active .login-btn:nth-child(12) {
+            transition-delay: 0.3s !important;
+        }
+        
+        /* Mobile Dropdown Styling */
+        .mobile-dropdown {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 8px;
+        }
+        
+        .mobile-dropdown-btn {
+            background: transparent !important; /* No background */
+            border: none !important; /* No border */
+            border-radius: 8px !important; /* Match other headings */
+            width: 100% !important;
+            text-align: left !important;
+            cursor: pointer !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Smooth easing */
+            padding: 0.5rem 1rem !important; /* py-2 px-4 - match other headings exactly */
+            margin: 4px 16px !important; /* Match other headings exactly */
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            color: white !important;
+            font-weight: 600 !important;
+            box-shadow: none !important;
+            transform: scale(1) !important; /* Normal scale */
+        }
+        
+        /* Add subtle bounce effect when clicked */
+        .mobile-dropdown-btn:active {
+            transform: scale(0.98) !important; /* Slight scale down when clicked */
+            transition: transform 0.1s ease !important; /* Quick response */
+        }
+        
+        .mobile-dropdown-btn:hover {
+            color: #fbbf24 !important; /* Same yellow hover effect as other headings */
+            background: rgba(255, 255, 255, 0.1) !important; /* Same light background as other headings */
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        .mobile-dropdown-btn.active {
+            color: #fbbf24 !important; /* Keep yellow color when active */
+            background: rgba(255, 255, 255, 0.1) !important; /* Same light background when active */
+            box-shadow: none !important;
+        }
+        
+        .mobile-dropdown-btn svg {
+            color: #fbbf24 !important;
+            stroke-width: 3 !important;
+            min-width: 24px !important;
+            min-height: 24px !important;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)) !important;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Smooth arrow rotation */
+        }
+        
+        .mobile-dropdown-btn.active svg {
+            transform: rotate(180deg) !important;
+            color: #fbbf24 !important;
+        }
+        
+        /* Ensure the button text is visible and matches other headings */
+        .mobile-dropdown-btn span {
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+            font-size: 18px !important; /* Match text-lg from other headings */
+        }
+        
+        .mobile-dropdown-btn .bg-gradient-to-r {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+            font-weight: 600 !important; /* Match font-semibold from other headings */
+            font-size: 18px !important; /* Match text-lg from other headings */
+        }
+        
+        /* KeyFeatures is now one span - no spacing issues */
+        
+        /* Force mobile dropdown button visibility */
+        .mobile-dropdown-btn {
+            position: relative !important;
+            z-index: 10 !important;
+        }
+        
+        /* Ensure SVG icons are visible */
+        .mobile-dropdown-btn svg {
+            color: #fbbf24 !important;
+            stroke-width: 3 !important;
+            min-width: 24px !important;
+            min-height: 24px !important;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)) !important;
+        }
+        
+        .mobile-dropdown-content {
+            background: transparent !important; /* No dark background */
+            border: none !important; /* No border */
+            border-radius: 0 !important;
+            margin: 8px 0 !important;
+            overflow: hidden !important;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Smooth easing */
+            opacity: 0 !important; /* Start transparent */
+            max-height: 0 !important; /* Start collapsed */
+            backdrop-filter: none !important;
+            box-shadow: none !important;
+            position: relative !important;
+            z-index: 5 !important;
+            transform: translateY(-10px) !important; /* Start slightly up */
+            will-change: transform, opacity, max-height !important; /* Optimize animations */
+        }
+        
+        /* When dropdown is shown, animate to final state */
+        .mobile-dropdown-content.show {
+            max-height: 500px !important; /* Increased height for content */
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important; /* Move to normal position */
+        }
+        
+        /* Ensure hidden dropdowns are properly hidden */
+        .mobile-dropdown-content.hidden {
+            max-height: 0 !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(-10px) !important;
+        }
+        
+        .mobile-dropdown-content a {
+            padding: 14px 24px !important;
+            display: block !important;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Smooth easing */
+            color: #e2e8f0 !important; /* Light gray text */
+            font-weight: 500 !important;
+            border-bottom: none !important; /* No borders */
+            font-size: 15px !important;
+            background: rgba(255, 255, 255, 0.05) !important; /* Very light background */
+            border-radius: 4px !important; /* Subtle rounded corners */
+            margin: 2px 0 !important; /* Small spacing between items */
+            transform: translateX(-20px) !important; /* Start slightly left */
+            opacity: 0 !important; /* Start transparent */
+        }
+        
+        /* Reset dropdown items when dropdown is hidden */
+        .mobile-dropdown-content.hidden a {
+            transform: translateX(-20px) !important; /* Reset to left position */
+            opacity: 0 !important; /* Reset to transparent */
+            transition-delay: 0s !important; /* No delay when hiding */
+        }
+        
+        /* Animate dropdown items when dropdown is shown */
+        .mobile-dropdown-content.show a {
+            transform: translateX(0) !important; /* Move to normal position */
+            opacity: 1 !important; /* Fade in */
+        }
+        
+        /* Staggered animation for dropdown items */
+        .mobile-dropdown-content.show a:nth-child(1) { transition-delay: 0.1s !important; }
+        .mobile-dropdown-content.show a:nth-child(2) { transition-delay: 0.15s !important; }
+        .mobile-dropdown-content.show a:nth-child(3) { transition-delay: 0.2s !important; }
+        .mobile-dropdown-content.show a:nth-child(4) { transition-delay: 0.25s !important; }
+        .mobile-dropdown-content.show a:nth-child(5) { transition-delay: 0.3s !important; }
+        
+        .mobile-dropdown-content a:last-child {
+            border-bottom: none !important;
+        }
+        
+        .mobile-dropdown-content a:hover {
+            background: rgba(255, 255, 255, 0.15) !important; /* Light hover background */
+            color: #fbbf24 !important; /* Yellow text on hover */
+            transform: translateX(8px) !important;
+            text-shadow: 0 0 8px rgba(251, 191, 36, 0.5) !important;
+            padding-left: 32px !important; /* Extra left padding on hover */
+            border-radius: 6px !important; /* Rounded corners on hover */
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1) !important; /* Subtle light shadow */
+        }
+        
+        /* Mobile Login Button Styling */
+        .nav-links .login-btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+            border: none !important;
+            color: #1f2937 !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            text-align: center !important;
+            width: auto !important;
+            min-width: 120px !important;
+            margin: 16px auto 0 auto !important;
+            padding: 12px 24px !important;
+        }
+        
+        .nav-links .login-btn:hover {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4) !important;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 1rem 0;
+            }
+            
+            .nav-content {
+                padding: 0 1rem;
+            }
+            
+            .header-logo {
+                height: 40px;
+                width: 40px;
+            }
+            
+            .nav-links {
+                padding: 1rem 0;
+            }
+            
+            .nav-links a {
+                padding: 12px 16px;
+                border-radius: 8px;
+                margin: 4px 16px;
+                text-align: left !important; /* Left align on mobile */
+            }
+            
+            /* Ensure dropdown buttons match other headings exactly */
+            .mobile-dropdown-btn {
+                padding: 12px 16px !important; /* Match other headings exactly */
+                border-radius: 8px !important; /* Match other headings exactly */
+                margin: 4px 16px !important; /* Match other headings exactly */
+            }
+            
+            .nav-links a:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            
+            /* Ensure dropdown buttons have the same hover effect as other headings */
+            .mobile-dropdown-btn:hover {
+                color: #fbbf24 !important;
+                background: rgba(255, 255, 255, 0.1) !important; /* Same light background as other headings */
+            }
+            
+            /* Left align mobile menu content */
+            .nav-links .px-4 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+                text-align: left !important;
+            }
+            
+            /* Ensure mobile dropdown content is left-aligned */
+            .mobile-dropdown-content {
+                text-align: left !important;
+                padding-left: 0 !important;
+            }
+            
+            .mobile-dropdown-content a {
+                text-align: left !important;
+                padding-left: 24px !important;
+            }
+            
+            /* Ensure mobile menu button lines are bright white */
+            .mobile-menu-btn span {
+                background: #ffffff !important;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6) !important;
+                filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8)) !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-content {
+                padding: 0 0.5rem;
+            }
+            
+            .header-logo {
+                height: 36px;
+                width: 36px;
+            }
+            
+            .nav-links a {
+                margin: 2px 8px;
+                padding: 10px 12px;
+                text-align: left !important;
+            }
+            
+            /* Ensure dropdown buttons match other headings on small screens */
+            .mobile-dropdown-btn {
+                margin: 2px 8px !important; /* Match other headings exactly */
+                padding: 10px 12px !important; /* Match other headings exactly */
+            }
+            
+            /* Extra left alignment for very small screens */
+            .mobile-dropdown-content a {
+                padding-left: 20px !important;
+            }
+        }
+        
         .group:hover .invisible {
             visibility: visible !important;
         }
@@ -446,8 +917,8 @@
                     <a href="{% url 'login' %}" class="login-btn text-lg font-semibold text-gray-800 px-6 py-2 rounded-lg mb-1">Login</a>
                 </div>
                 
-                <!-- Mobile Menu Button -->
-                <div class="mobile-menu-btn md:hidden">
+                <!-- Mobile Menu Button - Only visible on mobile screens -->
+                <div class="mobile-menu-btn block lg:hidden">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -455,15 +926,14 @@
             </div>
             
             <!-- Mobile Navigation -->
-            <div class="nav-links md:hidden">
+            <div class="nav-links hidden">
                 <div class="px-4 py-6 space-y-4">
                     <a href="{% url 'home' %}" class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 block py-2">Home</a>
                     
                     <!-- Mobile Key Features -->
                     <div class="mobile-dropdown">
                         <button class="nav-link text-lg font-semibold text-white hover:text-yellow-400 transition-all duration-300 flex items-center justify-between w-full py-2 mobile-dropdown-btn">
-                            <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent font-bold">Key</span>
-                            <span class="ml-1">Features</span>
+                            <span class="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent font-bold">KeyFeatures</span>
                             <svg class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -532,12 +1002,38 @@
             
             if (mobileMenuBtn && navLinks) {
                 mobileMenuBtn.addEventListener('click', function() {
-                    navLinks.classList.toggle('active');
+                    console.log('Hamburger button clicked!'); // Debug log
                     
-                    // Animate hamburger menu
+                    // Toggle active class on button
+                    this.classList.toggle('active');
+                    
+                    // Toggle main mobile menu with smooth animation
+                    if (navLinks.classList.contains('active')) {
+                        console.log('Closing menu...'); // Debug log
+                        // Close menu with smooth animation
+                        navLinks.classList.remove('active');
+                        
+                        // Wait for animation to complete before hiding
+                        setTimeout(() => {
+                            navLinks.classList.add('hidden');
+                            console.log('Menu hidden'); // Debug log
+                        }, 400); // Match CSS transition duration
+                    } else {
+                        console.log('Opening menu...'); // Debug log
+                        // Open menu with smooth animation
+                        navLinks.classList.remove('hidden');
+                        
+                        // Add a small delay to ensure CSS transitions work
+                        setTimeout(() => {
+                            navLinks.classList.add('active');
+                            console.log('Menu active'); // Debug log
+                        }, 10);
+                    }
+                    
+                    // Animate hamburger menu lines
                     const spans = this.querySelectorAll('span');
                     spans.forEach((span, index) => {
-                        if (navLinks.classList.contains('active')) {
+                        if (this.classList.contains('active')) {
                             if (index === 0) span.style.transform = 'rotate(45deg) translate(5px, 5px)';
                             if (index === 1) span.style.opacity = '0';
                             if (index === 2) span.style.transform = 'rotate(-45deg) translate(7px, -6px)';
@@ -549,7 +1045,7 @@
                 });
             }
             
-            // Mobile dropdown functionality
+            // Mobile dropdown functionality with smooth animations
             const mobileDropdownBtns = document.querySelectorAll('.mobile-dropdown-btn');
             mobileDropdownBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -559,13 +1055,23 @@
                     // Toggle active class on button
                     this.classList.toggle('active');
                     
-                    // Toggle dropdown content
+                    // Toggle dropdown content with smooth animation
                     if (dropdownContent.classList.contains('hidden')) {
+                        // Show dropdown with smooth animation
                         dropdownContent.classList.remove('hidden');
-                        dropdownContent.style.maxHeight = dropdownContent.scrollHeight + 'px';
+                        
+                        // Add a small delay to ensure CSS transitions work
+                        setTimeout(() => {
+                            dropdownContent.classList.add('show');
+                        }, 10);
                     } else {
-                        dropdownContent.classList.add('hidden');
-                        dropdownContent.style.maxHeight = '0';
+                        // Hide dropdown with smooth animation
+                        dropdownContent.classList.remove('show');
+                        
+                        // Wait for animation to complete before hiding
+                        setTimeout(() => {
+                            dropdownContent.classList.add('hidden');
+                        }, 400); // Match CSS transition duration
                     }
                 });
             });
@@ -573,7 +1079,16 @@
             // Close mobile menu when clicking outside
             document.addEventListener('click', function(e) {
                 if (!mobileMenuBtn.contains(e.target) && !navLinks.contains(e.target)) {
+                    // Close menu with smooth animation
                     navLinks.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
+                    
+                    // Wait for animation to complete before hiding
+                    setTimeout(() => {
+                        navLinks.classList.add('hidden');
+                    }, 400); // Match CSS transition duration
+                    
+                    // Reset hamburger menu lines
                     const spans = mobileMenuBtn.querySelectorAll('span');
                     spans.forEach(span => {
                         span.style.transform = 'none';

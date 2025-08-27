@@ -37,7 +37,9 @@ try:
 except:
     SECRET_KEY = 'ta-m1t%jyq86=0#pbt2@p&40d4wyq86=0#pbt2@p&40d4wi($0jk%pn1rk=zc8^(16l$u'
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+# Only set DEBUG from environment if it's not already set by local_settings
+if 'DEBUG' not in locals():
+    DEBUG = config('DEBUG', default=False, cast=bool)
 
 try:
     ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
@@ -143,17 +145,23 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Static files - will be configured by local_settings.py or environment
+# STATIC_URL, STATICFILES_DIRS, and STATIC_ROOT are set in local_settings.py
 
-# Debug static files configuration (commented out for production)
-# print(f"DEBUG: STATIC_ROOT = {STATIC_ROOT}")
-# print(f"DEBUG: STATICFILES_DIRS = {STATICFILES_DIRS}")
-# print(f"DEBUG: BASE_DIR = {BASE_DIR}")
+# Fallback static file configuration if local_settings.py is not available
+if 'STATIC_URL' not in locals():
+    STATIC_URL = '/static/'
+if 'STATICFILES_DIRS' not in locals():
+    STATICFILES_DIRS = []
+if 'STATIC_ROOT' not in locals():
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Debug static files configuration
+print(f"DEBUG: Final configuration - DEBUG={DEBUG}")
+print(f"DEBUG: STATIC_URL = {STATIC_URL}")
+print(f"DEBUG: STATICFILES_DIRS = {STATICFILES_DIRS}")
+print(f"DEBUG: STATIC_ROOT = {STATIC_ROOT}")
+print(f"DEBUG: BASE_DIR = {BASE_DIR}")
 
 # Add whitenoise for static file serving in production
 if not DEBUG:
@@ -165,6 +173,8 @@ if not DEBUG:
         print(f"Error adding WhiteNoise: {e}")
         # Fallback to default static files
         pass
+else:
+    print(f"DEBUG mode is {DEBUG}, skipping WhiteNoise middleware")
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1048576000
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576000
