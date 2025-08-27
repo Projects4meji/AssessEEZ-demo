@@ -167,7 +167,7 @@ print(f"DEBUG: BASE_DIR = {BASE_DIR}")
 if not DEBUG:
     try:
         MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-        STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+        STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
         
         # Ensure STATIC_ROOT exists and is properly configured for production
         if not os.path.exists(STATIC_ROOT):
