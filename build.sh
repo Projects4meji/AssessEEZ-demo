@@ -6,6 +6,7 @@ echo "=== BUILDING DJANGO PROJECT ==="
 # Set Django settings to production
 export DJANGO_SETTINGS_MODULE=AssessEEZ.production_settings
 export FORCE_COLLECT_STATIC=true
+export DISABLE_AUTO_COLLECT=true
 
 # Create staticfiles directory if it doesn't exist
 echo "Creating staticfiles directory..."
