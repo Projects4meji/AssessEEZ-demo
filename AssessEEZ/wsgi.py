@@ -11,6 +11,7 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AssessEEZ.settings')
+# Use production settings for deployment
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AssessEEZ.production_settings')
 
 application = get_wsgi_application()

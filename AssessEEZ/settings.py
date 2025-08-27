@@ -167,8 +167,21 @@ print(f"DEBUG: BASE_DIR = {BASE_DIR}")
 if not DEBUG:
     try:
         MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-        STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+        STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+        
+        # Ensure STATIC_ROOT exists and is properly configured for production
+        if not os.path.exists(STATIC_ROOT):
+            os.makedirs(STATIC_ROOT, exist_ok=True)
+            print(f"Created STATIC_ROOT directory: {STATIC_ROOT}")
+        
+        # Configure WhiteNoise for better performance
+        STATICFILES_FINDERS = [
+            'django.contrib.staticfiles.finders.FileSystemFinder',
+            'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+        ]
+        
         print("WhiteNoise middleware added successfully")
+        print(f"Production STATIC_ROOT: {STATIC_ROOT}")
     except Exception as e:
         print(f"Error adding WhiteNoise: {e}")
         # Fallback to default static files
